@@ -1,6 +1,6 @@
 [package]
 name = "fluig-monitor"
-version = "0.2.2"
+version = "1.0.0"
 description = "Fluig Observability & Real-Time Monitoring Suite"
 authors = ["Mateus Brandão"]
 license = "MIT"

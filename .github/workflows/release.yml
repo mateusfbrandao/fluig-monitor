@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag de versão para a release (ex: v1.0.0)'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   release:
@@ -43,13 +48,13 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build and package with Tauri
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'Fluig Monitor ${{ github.ref_name }}'
-          releaseBody: 'Consulte o histórico de alterações para mais detalhes.'
-          releaseDraft: true
+          tagName: ${{ github.event.inputs.version || github.ref_name }}
+          releaseName: 'Fluig Monitor ${{ github.event.inputs.version || github.ref_name }}'
+          releaseBody: 'Release oficial do Fluig Monitor em versão nativa desktop com Tauri v2 e Rust. Disponível para Linux (.deb, .AppImage) e Windows (.exe).'
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
