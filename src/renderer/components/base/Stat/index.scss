@@ -1,0 +1,18 @@
+.stat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: bold;
+  }
+
+  .stat-description {
+    font-size: 0.76rem;
+    line-height: 1.35;
+    color: var(--font-soft);
+    margin: 0.15rem 0 0 0;
+  }
+}

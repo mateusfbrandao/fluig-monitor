@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fluig Monitor</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('fluig_store_FRONT_END_THEME') || localStorage.getItem('FRONT_END_THEME');
+          if (saved) {
+            try { saved = JSON.parse(saved); } catch(e) {}
+          }
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'DARK' || (!saved && prefersDark) || (saved === 'SYSTEM' && prefersDark)) {
+            document.documentElement.classList.add('dark-theme');
+            if (document.body) document.body.classList.add('dark-theme');
+          }
+        } catch(e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

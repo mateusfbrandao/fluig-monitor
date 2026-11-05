@@ -1,0 +1,28 @@
+[package]
+name = "fluig-monitor"
+version = "0.2.2"
+description = "Fluig Observability & Real-Time Monitoring Suite"
+authors = ["Mateus Brandão"]
+license = "MIT"
+repository = "https://github.com/mateusfbrandao/fluig-monitor"
+edition = "2021"
+
+[lib]
+name = "fluig_monitor_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7.4", features = [] }
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+log = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+tauri = { version = "2.12.5", features = ["tray-icon", "devtools"] }
+tauri-plugin-log = "2"
+tauri-plugin-notification = "2"
+open = "5"

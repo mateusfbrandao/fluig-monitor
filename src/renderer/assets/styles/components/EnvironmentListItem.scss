@@ -1,0 +1,96 @@
+.environment-item-container {
+  color: var(--font-secondary);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.55rem;
+  text-decoration: none;
+  transition: all var(--transition);
+  background-color: transparent;
+  border: 1px solid transparent;
+  position: relative;
+  width: 100%;
+
+  &:hover {
+    background-color: var(--surface-subtle);
+    border-color: var(--border-light);
+  }
+
+  &.is-selected {
+    background-color: var(--light-purple);
+    border-color: rgba(99, 102, 241, 0.35);
+
+    .data .env-name-text {
+      color: var(--purple);
+      font-weight: 600;
+    }
+  }
+
+  &.is-expanded {
+    .initials {
+      position: relative;
+      background-color: var(--surface-subtle);
+      color: var(--font-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 2.15rem;
+      height: 2.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.45rem;
+      margin-right: 0.6rem;
+      flex-shrink: 0;
+      border: 1px solid var(--border-light);
+
+      .live-dot {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        border: 2px solid var(--card);
+
+        &.online {
+          background-color: var(--green);
+        }
+
+        &.offline {
+          background-color: var(--red);
+        }
+      }
+    }
+
+    .data {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      gap: 0.15rem;
+
+      .env-name-text {
+        font-size: 0.84rem;
+        font-weight: 500;
+        color: var(--font-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .env-release-text {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.68rem;
+          color: var(--font-soft);
+        }
+      }
+    }
+  }
+}

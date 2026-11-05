@@ -1,0 +1,98 @@
+.modern-switch-group {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-light);
+  background-color: var(--surface-subtle);
+  transition: all var(--transition);
+
+  &:hover {
+    border-color: rgba(99, 102, 241, 0.35);
+  }
+
+  &.is-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .switch-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+
+    .switch-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--font-primary);
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .switch-helper {
+      font-size: 0.78rem;
+      color: var(--font-soft);
+      line-height: 1.4;
+    }
+  }
+
+  .switch-control {
+    position: relative;
+    display: inline-block;
+    width: 2.6rem;
+    height: 1.45rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .switch-slider {
+        background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+
+        &::before {
+          transform: translateX(1.15rem);
+          background-color: #ffffff;
+        }
+      }
+
+      &:focus-visible + .switch-slider {
+        outline: 2px solid var(--purple);
+        outline-offset: 2px;
+      }
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border-light);
+      transition: all var(--transition);
+      border-radius: 999px;
+
+      &::before {
+        position: absolute;
+        content: '';
+        height: 1.15rem;
+        width: 1.15rem;
+        left: 0.15rem;
+        bottom: 0.15rem;
+        background-color: #ffffff;
+        transition: transform var(--transition);
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+}

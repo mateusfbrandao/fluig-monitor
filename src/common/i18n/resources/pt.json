@@ -1,0 +1,544 @@
+{
+  "menu": {
+    "about": {
+      "label": "&Sobre",
+      "aboutApp": "Sobre o Fluig Monitor",
+      "github": "Repositório no GitHub",
+      "bugReport": "Reportar um Bug / Sugestão"
+    },
+    "languages": {
+      "label": "&Idioma",
+      "pt": "🇧🇷 Português",
+      "en": "🇺🇸 Inglês",
+      "es": "🇲🇽 Espanhol"
+    },
+    "view": {
+      "label": "&Visualizar",
+      "reload": "Recarregar",
+      "forceReload": "Forçar Recarregamento",
+      "toggleFS": "Alternar Tela Cheia",
+      "toggleDevTools": "Alternar Ferramentas do Desenvolvedor",
+      "actualSize": "Tamanho Real",
+      "zoomIn": "Aumentar Zoom",
+      "zoomOut": "Diminuir Zoom"
+    },
+    "file": {
+      "label": "&Arquivo",
+      "newEnvironment": "Novo Ambiente...",
+      "settings": "Configurações...",
+      "quit": "Sair"
+    },
+    "systemTray": {
+      "running": "Fluig Monitor em execução",
+      "open": "Abrir",
+      "reportABug": "Reportar um erro",
+      "dropBombs": "Lançar bombas",
+      "quit": "Sair"
+    }
+  },
+  "navbar": {
+    "actionButtons": {
+      "updateDownloaded": "Atualização baixada. Clique para instalar.",
+      "updateAvailable": "Atualização disponível. Clique para baixar.",
+      "kioskMode": "Habilitar Modo Quiosque",
+      "notifications": "Abrir Notificações",
+      "theme": "Alterar Tema",
+      "settings": "Abrir Configurações"
+    }
+  },
+  "views": {
+    "CreateEnvironmentView": {
+      "createdSuccessfully": "Ambiente incluído com sucesso.",
+      "connecting": "Conectando ...",
+      "connectionError": "Erro na conexão: ",
+      "connectionOk": "Conexão Ok",
+      "connectionUnavailable": "Erro de conexão. Verifique a URL de domínio e a disponibilidade do servidor.",
+      "authFieldsValidation": "Preencha os campos de URL e autenticação para continuar.",
+      "back": "Voltar",
+      "unsupportedFluigRelease": "Esta release do Fluig (%release%) não é compatível com o Fluig Monitor",
+      "unableToEncrypt": "Não foi possível criptografar as chaves de autenticação",
+      "form": {
+        "title": "Incluir um novo ambiente",
+        "environmentDataSection": "Dados do ambiente",
+        "environmentName": {
+          "label": "Nome do ambiente:",
+          "placeholder": "Ex.: Ambiente Exemplo 01"
+        },
+        "domainUrl": {
+          "label": "URL De Domínio:",
+          "placeholder": "Ex.: https://teste.fluig.com"
+        },
+        "environmentKind": {
+          "label": "Tipo:",
+          "options": {
+            "prod": "Produção",
+            "hml": "Homologação",
+            "dev": "Desenvolvimento"
+          }
+        },
+        "environmentAuthSection": "Autenticação",
+        "consumerKey": {
+          "label": "Consumer Key:",
+          "placeholder": "Informe a consumer key"
+        },
+        "consumerSecret": {
+          "label": "Consumer Secret:",
+          "placeholder": "Informe a consumer secret"
+        },
+        "accessToken": {
+          "label": "Access Token:",
+          "placeholder": "Informe o access token"
+        },
+        "tokenSecret": {
+          "label": "Token Secret:",
+          "placeholder": "Informe o token secret"
+        },
+        "useEncryption": "Criptografar chaves?",
+        "testConnection": "Testar Conexão",
+        "serverVerification": {
+          "title": "Verificação Do Servidor",
+          "label": "Frequência",
+          "helper": "Tempo utilizado para a verificação da disponibilidade do servidor.",
+          "options": {
+            "15s": "15 segundos",
+            "30s": "30 segundos",
+            "1m": "1 minuto",
+            "2m": "2 minutos"
+          }
+        },
+        "dataCollection": {
+          "title": "Coleta De Dados",
+          "label": "Frequência",
+          "helper": "Tempo utilizado para a coleta de informações do monitor, licenças e estatísticas.",
+          "options": {
+            "15m": "15 minutos",
+            "30m": "30 minutos",
+            "1h": "1 hora",
+            "2h": "2 horas",
+            "3h": "3 horas",
+            "6h": "6 horas",
+            "12h": "12 horas",
+            "24h": "24 horas"
+          }
+        },
+        "buttonSubmit": "Confirmar"
+      }
+    },
+    "EditEnvironmentView": {
+      "connecting": "Conectando...",
+      "connectionError": "Erro na conexão",
+      "connectionOk": "Conexão Ok",
+      "insufficientPermissions": "Usuário aplicativo sem permissões suficientes.",
+      "connectionUnavailable": "Erro de conexão. Verifique a URL de domínio e a disponibilidade do servidor.",
+      "authFieldsValidation": "Preencha os campos de URL e autenticação para continuar.",
+      "updateError": "Erro ao atualizar informações do ambiente, tente novamente.",
+      "updatedSuccessfully": "Ambiente atualizado com sucesso",
+      "clickAgain": "Clique novamente para confirmar a exclusão.",
+      "deletedSuccessfully": "Ambiente excluído com sucesso.",
+      "back": "Voltar",
+      "unableToEncrypt": "Não foi possível criptografar as chaves de autenticação",
+      "form": {
+        "title": "Editar ambiente",
+        "environmentDataSection": "Dados do ambiente",
+        "environmentName": {
+          "label": "Nome do ambiente:",
+          "placeholder": "Ex.: Ambiente Homologação"
+        },
+        "domainUrl": {
+          "label": "URL de domínio:",
+          "placeholder": "Ex.: https://ambiente.teste:8080"
+        },
+        "environmentKind": {
+          "label": "Tipo:",
+          "options": {
+            "prod": "Produção",
+            "hml": "Homologação",
+            "dev": "Desenvolvimento"
+          }
+        },
+        "environmentAuthSection": "Autenticação",
+        "consumerKey": {
+          "label": "Consumer Key:",
+          "placeholder": "Informe a consumer key"
+        },
+        "consumerSecret": {
+          "label": "Consumer Secret:",
+          "placeholder": "Informe a consumer secret"
+        },
+        "accessToken": {
+          "label": "Access Token:",
+          "placeholder": "Informe o access token"
+        },
+        "tokenSecret": {
+          "label": "Token Secret:",
+          "placeholder": "Informe o token secret"
+        },
+        "useEncryption": "Criptografar chaves?",
+        "testConnection": "Testar Conexão",
+        "serverVerification": {
+          "title": "Verificação Do Servidor",
+          "label": "Frequência",
+          "helper": "Tempo utilizado para a verificação da disponibilidade do servidor.",
+          "options": {
+            "15s": "15 segundos",
+            "30s": "30 segundos",
+            "1m": "1 minuto",
+            "2m": "2 minutos"
+          }
+        },
+        "dataCollection": {
+          "title": "Coleta De Dados",
+          "label": "Frequência",
+          "helper": "Tempo utilizado para a coleta de informações do monitor, licenças e estatísticas.",
+          "options": {
+            "15m": "15 minutos",
+            "30m": "30 minutos",
+            "1h": "1 hora",
+            "2h": "2 horas",
+            "3h": "3 horas",
+            "6h": "6 horas",
+            "12h": "12 horas",
+            "24h": "24 horas"
+          }
+        },
+        "buttonSave": "Salvar",
+        "buttonDelete": "Excluir"
+      }
+    },
+    "HomeEnvironmentListView": {
+      "header": "Seus Ambientes",
+      "createEnvironmentHelper": "Inclua um novo ambiente utilizando o botão ao lado."
+    },
+    "EnvironmentDataContainer": {
+      "sideMenu": {
+        "summary": "Resumo",
+        "database": "Banco De Dados",
+        "detailedMemory": "Memória Detalhada",
+        "runtimeStats": "Estatísticas De Runtime",
+        "artifacts": "Artefatos",
+        "insights": "Insights",
+        "services": "Serviços",
+        "settings": "Configurações"
+      }
+    },
+    "AppSettingsView": {
+      "title": "Configurações",
+      "subtitle": "Preferências globais da aplicação, armazenamento e comportamento do sistema.",
+      "tabs": {
+        "appearance": "Aparência",
+        "system": "Sistema",
+        "storage": "Armazenamento",
+        "about": "Sobre"
+      }
+    }
+  },
+  "global": {
+    "environmentKinds": {
+      "HML": "Homologação",
+      "DEV": "Desenvolvimento",
+      "PROD": "Produção"
+    },
+    "environmentKindsShort": {
+      "HML": "HML",
+      "DEV": "DEV",
+      "PROD": "PRD"
+    }
+  },
+  "helpMessages": {
+    "environments": {
+      "maximumExceeded": "Você só pode favoritar até 3 ambientes.",
+      "added": "Ambiente adicionado aos favoritos.",
+      "removed": "Ambiente removido dos favoritos."
+    }
+  },
+  "components": {
+    "global": {
+      "noData": "Sem dados disponíveis",
+      "underDevelopment": "Funcionalidade em desenvolvimento"
+    },
+    "EnvironmentLicenses": {
+      "title": "Licenças",
+      "usedLicenses": "%active% de %total% licenças usadas",
+      "remainingLicenses": "%remaining% restantes"
+    },
+    "EnvironmentServerInfo": {
+      "title": "Servidor",
+      "processor": "Processador",
+      "memory": "Memória",
+      "disk": "Disco",
+      "activityTime": "Tempo De Atividade",
+      "activityTimeDescription": "%days% dias, %hours% horas, %minutes% minutos",
+      "noDataDueToVersion": "Dados do servidor indisponíveis para esta versão do Fluig."
+    },
+    "EnvironmentServices": {
+      "title": "Serviços",
+      "operational": "Operacional",
+      "unused": "Não Utilizado",
+      "failed": "Com Falha"
+    },
+    "EnvironmentStatusCard": {
+      "title": "Status",
+      "responseTime": "Tempo de resposta: %responseTime%ms",
+      "attention": "Atenção",
+      "operational": "Operacional",
+      "unavailable": "Indisponível",
+      "operatingCorrectly": "O servidor está online e operando corretamente.",
+      "highResponseTime": "O servidor está online, porém apresenta um tempo de resposta incomum.",
+      "noSatisfactoryResponse": "O servidor está online, porém não apresenta uma resposta satisfatória (HTTP %http%).",
+      "mayBeOffline": "É possível que o servidor esteja offline, veja detalhes abaixo: "
+    },
+    "EnvironmentStatusSummary": {
+      "updatedAt": "Atualizado às",
+      "updatedAtAlt": "Atualizado em"
+    },
+    "SystemResources": {
+      "Disk": {
+        "title": "Disco",
+        "used": "Usado",
+        "outOf": "de"
+      },
+      "Memory": {
+        "title": "Memória",
+        "used": "Usado",
+        "outOf": "de"
+      },
+      "Database": {
+        "title": "Banco De Dados",
+        "size": "Tamanho",
+        "traffic": "Tráfego",
+        "trafficNotAllowed": "Tráfego indisponível"
+      },
+      "DatabasePropsPanel": {
+        "title": "Banco de dados",
+        "dbName": "SGBD:",
+        "dbVersion": "Versão",
+        "dbDriverName": "Driver:",
+        "dbDriverVersion": "Versão Do Driver:"
+      },
+      "DatabaseConnectionPools": {
+        "title": "Pools de Conexões JDBC (WildFly)",
+        "fluigDs": "Pool FluigDS (Principal / Escrita)",
+        "fluigDsRo": "Pool FluigDSRO (Somente Leitura)",
+        "activeConnections": "Ativas",
+        "availableConnections": "Livres",
+        "maxUsedConnections": "Pico Máximo",
+        "createdConnections": "Total Criadas",
+        "poolLimits": "Limites (Min / Max)",
+        "utilization": "Saturação",
+        "statusHealthy": "Saudável",
+        "statusWarning": "Atenção (Consumo Alto)",
+        "statusCritical": "Crítico (Risco de Timeout)",
+        "tip": "Dica: Mantenha a saturação do FluigDS abaixo de 80% para evitar travamento em execuções de processos e datasets pesados."
+      }
+    },
+    "EnvironmentPerformanceGraph": {
+      "title": "Performance",
+      "graphTitle": "Tempo de resposta do servidor",
+      "last24h": "Ultimas 24 horas",
+      "insufficientOrNoData": "Sem dados ou dados insuficientes.",
+      "responseTime": "Tempo De Resposta (ms)"
+    },
+    "DatabaseEvolutionGraph": {
+      "title": "Armazenamento Do Banco De Dados",
+      "graphTitle": "Armazenamento ao longo do tempo"
+    },
+    "DatabaseNetWorkGraph": {
+      "insufficientOrNoData": "Sem dados ou dados insuficientes.",
+      "title": "Trafego Do Banco de Dados",
+      "graphTitleInbound": "Fluxo de entrada",
+      "graphTitleOutbound": "Fluxo de saída",
+      "graphTitleMixed": "Fluxo de entrada e saída",
+      "dataNotAllowed": "Visualização de trafego não permitido"
+    },
+    "ThemeSettings": {
+      "title": "Tema",
+      "helperText": "Selecione o tema de exibição da interface:",
+      "systemTheme": "Sistema",
+      "systemThemeDesc": "Automático",
+      "whiteTheme": "Tema Claro",
+      "whiteThemeDesc": "Modo diurno",
+      "darkTheme": "Tema Escuro",
+      "darkThemeDesc": "Modo noturno"
+    },
+    "UpdatesSettings": {
+      "title": "Atualizações",
+      "helperText": "Aqui você poderá escolher como a aplicação deverá se comportar com as atualizações.",
+      "enableAutoDownload": {
+        "label": "Baixar atualizações automaticamente.",
+        "helper": "Ao habilitar esta opção, o Fluig Monitor irá baixar as atualizações disponível automaticamente."
+      },
+      "enableAutoInstall": {
+        "label": "Instalar atualizações automaticamente.",
+        "helper": "Ao habilitar esta opção, o Fluig Monitor irá instalar as atualizações automaticamente após efetuar o download."
+      },
+      "updateFrequency": {
+        "helper": "As atualizações são sempre verificadas diariamente."
+      },
+      "checkNow": "Verificar se há atualizações agora",
+      "checkingNow": "Verificando atualizações...",
+      "checkCompleted": "Verificação enviada. Se houver novidades, uma notificação será exibida."
+    },
+    "StorageSettings": {
+      "title": "Armazenamento & Retenção de Dados",
+      "helperText": "Configure o período de retenção do histórico no banco SQLite local para manter a aplicação rápida e leve.",
+      "kpis": {
+        "dbSize": "Tamanho do Banco",
+        "pingRecords": "Registros de Ping",
+        "snapshots": "Snapshots de Métricas"
+      },
+      "pingRetention": {
+        "label": "Histórico de Pings / Latência:",
+        "helper": "Registros mais antigos que este intervalo serão expurgados."
+      },
+      "statsRetention": {
+        "label": "Histórico de Métricas e Licenças:",
+        "helper": "Estatísticas, threads e consumo de memória consolidados."
+      },
+      "pruneNow": "Limpar Histórico Antigo Agora",
+      "pruningNow": "Limpando histórico antigo...",
+      "pruneSuccess": "{{pings}} pings e {{snapshots}} snapshots limpos com sucesso."
+    },
+    "LanguageSettings": {
+      "title": "Idioma",
+      "helperText": "Selecione abaixo o idioma a ser utilizado pela aplicação: "
+    },
+    "SystemTraySettings": {
+      "title": "Bandeja Do Sistema",
+      "helperText": "Utilize esta opção para definir o comportamento da aplicação na bandeja do sistema.",
+      "minimizeToSystemTray": "Minimizar para a bandeja do sistema",
+      "minimizeToSystemTrayHelper": "Ao habilitar esta opção, o Fluig Monitor será minimizado para a bandeja do sistema ao ser minimizado, e continuará em execução.",
+      "disableNotification": "Desabilitar notificação",
+      "disableNotificationHelper": "Utilize esta opção para desabilitar a notificação de que o Fluig Monitor ainda está em execução."
+    },
+    "AboutSection": {
+      "headingTitle": "Sobre",
+      "title": "Uma ferramenta open-source para monitoramento de ambientes Fluig.",
+      "developedBy": "Desenvolvido por ",
+      "disclosure": "O Fluig Monitor é um projeto open-source independente, desenvolvido para fins de pesquisa, estudo e apoio à comunidade técnica, sem qualquer vínculo ou chancela da TOTVS S.A.",
+      "usageDisclosure": "O software é fornecido gratuitamente \"no estado em que se encontra\" (as is). Por depender de APIs, versões e configurações customizadas de cada servidor, a compatibilidade pode variar conforme o ambiente.",
+      "learnMoreAt": "Saiba mais sobre o projeto no repositório oficial no "
+    },
+    "ReportABugSection": {
+      "title": "Reporte um bug",
+      "headline1": "Encontrou algum bug ou possui alguma sugestão de desenvolvimento sobre esta ferramenta?",
+      "headline2": "Você pode utilizar o botão abaixo para ser direcionado até a página de Issues do repositório no GitHub:",
+      "callToAction": "Acessar"
+    },
+    "GraphTooltip": {
+      "unitTitles": {
+        "ms": "Tempo",
+        "bytes": "Tamanho"
+      }
+    },
+    "EnvironmentDetailedMemoryContainer": {
+      "memoryConsumptionTitle": "Consumo De Memória",
+      "memoryConsumptionUsed": "Usado",
+      "memoryStatisticsTitle": "Estatísticas por tipo de memória",
+      "heapUsed": "Heap em Uso",
+      "heapUsedDesc": "Memória consumida por objetos ativos da aplicação Fluig.",
+      "nonHeap": "Non-Heap (Metaspace)",
+      "nonHeapDesc": "Memória nativa para classes carregadas e compilação JIT.",
+      "heapMax": "Heap Máximo (-Xmx)",
+      "heapMaxDesc": "Teto máximo permitido configurado para o servidor Java (-Xmx).",
+      "heapTotal": "Heap Reservado",
+      "heapTotalDesc": "Total de memória que a JVM já alocou do sistema operacional."
+    },
+    "EnvironmentHeader": {
+      "pingNow": "Verificar Agora",
+      "syncNow": "Sincronizar",
+      "openUrl": "Abrir no Navegador"
+    },
+    "EnvironmentRuntimeStats": {
+      "title": "Estatísticas de Runtime e Threads",
+      "connectedUsers": "Usuários Conectados",
+      "activeThreads": "Threads Ativas",
+      "peakThreads": "Pico de Threads",
+      "daemonThreads": "Threads Daemon",
+      "totalStartedThreads": "Total de Threads Iniciadas",
+      "tmpFolderSize": "Pasta Temporária",
+      "logFolderSize": "Pasta de Logs",
+      "runtimeStart": "Início do Runtime",
+      "threadsEvolutionTitle": "Evolução de Threads e Usuários Conectados"
+    },
+    "EnvironmentArtifacts": {
+      "title": "Artefatos do Servidor",
+      "appsDir": "Aplicações (Apps)",
+      "coreDir": "Núcleo (Core)",
+      "systemDir": "Sistema (System)",
+      "searchPlaceholder": "Filtrar artefatos por nome...",
+      "artifactName": "Artefato",
+      "artifactDetails": "Assinatura / Detalhes",
+      "totalCount": "Total listado"
+    },
+    "EnvironmentServicesHistory": {
+      "title": "Serviços e Fontes de Dados",
+      "overviewTitle": "Visão Geral de Subsistemas & SLA",
+      "successRate": "Taxa de Sucesso",
+      "lastException": "Última Exceção Registrada",
+      "noExceptions": "Sem exceções registradas",
+      "viewErrorDetails": "Ver Erro",
+      "dataSourcesTitle": "DataSources Configurados",
+      "historyTitle": "Histórico Recente de Monitoramento"
+    },
+    "EnvironmentInsights": {
+      "title": "Diagnóstico e Insights do Ambiente",
+      "allHealthyTitle": "Ambiente Operando Saudavelmente",
+      "allHealthyDesc": "Todas as métricas de memória, disco, licenças, serviços e latência estão dentro dos parâmetros recomendados.",
+      "highMemoryTitle": "Uso Elevado de Memória no Servidor",
+      "highMemoryDesc": "O consumo de memória RAM do servidor ultrapassou 85% da capacidade total.",
+      "lowDiskTitle": "Espaço em Disco Reduzido",
+      "lowDiskDesc": "O espaço livre em disco do servidor está abaixo de 15%.",
+      "largeLogsTitle": "Volume Elevado de Logs / Temporários",
+      "largeLogsDesc": "As pastas de logs ou arquivos temporários do Fluig acumulam mais de 5 GB.",
+      "lowLicensesTitle": "Licenças Próximas do Limite",
+      "lowLicensesDesc": "Restam poucas licenças disponíveis para novos acessos simultâneos.",
+      "failedServicesTitle": "Serviços Críticos com Falha",
+      "failedServicesDesc": "Um ou mais serviços monitorados reportaram falha na última coleta: ",
+      "highLatencyTitle": "Latência de Resposta Elevada",
+      "highLatencyDesc": "O tempo médio de resposta recente está acima de 800ms."
+    }
+  },
+  "classes": {
+    "EnvironmentFormValidator": {
+      "nameIsRequired": "Nome do ambiente é obrigatório.",
+      "baseUrlIsRequired": "Endereço do ambiente é obrigatório.",
+      "consumerKeyIsRequired": "Consumer Key é obrigatório.",
+      "consumerSecretIsRequired": "Consumer Secret ambiente é obrigatório.",
+      "accessTokenIsRequired": "Access Token é obrigatório.",
+      "tokenSecretIsRequired": "Token Secret é obrigatório.",
+      "scrapeFrequencyIsRequired": "Frequência de coleta é obrigatório.",
+      "pingFrequencyIsRequired": "Frequência de verificação é obrigatório."
+    }
+  },
+  "toasts": {
+    "HighResponseTime": {
+      "title": "com ping alto.",
+      "message": "O servidor está com um tempo de resposta muito alto."
+    },
+    "OperatingCorrectly": {
+      "title": "operando normalmente.",
+      "message": "O servidor voltou a operar dentro do tempo de resposta correto."
+    },
+    "ServerAvailable": {
+      "title": "disponível novamente.",
+      "message": "O servidor voltou a operar novamente."
+    },
+    "ServerUnavailable": {
+      "title": "indisponível.",
+      "message": "O servidor aparenta estar offline. Verifique."
+    },
+    "StillAlive": {
+      "title": "Ainda estou aqui.",
+      "message": "O Fluig Monitor está sendo executado na bandeja do sistema, você pode alterar este comportamento no painel de controle."
+    }
+  },
+  "dialogs": {
+    "updateDialog": {
+      "title": "Atualização disponível",
+      "message": "Deseja atualizar o Fluig Monitor?",
+      "detail": "Uma nova atualização do Fluig Monitor foi baixada e está pronta para ser executada.",
+      "btnYes": "Atualizar",
+      "btnNo": "Cancelar"
+    }
+  }
+}

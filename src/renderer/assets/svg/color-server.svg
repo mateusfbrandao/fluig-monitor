@@ -1,0 +1,63 @@
+<svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente Principal do Chassis (Indigo -> Blue -> Cyan) -->
+    <linearGradient id="serverStroke" x1="2" y1="2" x2="50" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="50%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+
+    <!-- Fundo Translúcido Moderno -->
+    <linearGradient id="serverBg" x1="2" y1="2" x2="50" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.06"/>
+    </linearGradient>
+
+    <!-- Gradiente dos Slots / Ventilação -->
+    <linearGradient id="slotGradient" x1="25" y1="0" x2="43" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0EA5E9" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <!-- Glow Suave para LEDs -->
+    <filter id="ledGlowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- MÓDULO SUPERIOR -->
+  <rect x="2.5" y="3.5" width="47" height="18.5" rx="4.5" fill="url(#serverBg)"/>
+  <rect x="2.5" y="3.5" width="47" height="18.5" rx="4.5" stroke="url(#serverStroke)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- LED 1: Status Online (Emerald Green) -->
+  <circle cx="10" cy="12.75" r="2.3" fill="#10B981" filter="url(#ledGlowGreen)"/>
+  <!-- LED 2: Atividade / Telemetria (Sky Blue) -->
+  <circle cx="16.5" cy="12.75" r="1.7" fill="#38BDF8"/>
+
+  <!-- Slots de Ventilação / Drive Bays -->
+  <line x1="25" y1="10.5" x2="42" y2="10.5" stroke="url(#slotGradient)" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="25" y1="15" x2="42" y2="15" stroke="url(#slotGradient)" stroke-width="2.2" stroke-linecap="round" opacity="0.8"/>
+
+
+  <!-- CONECTORES CENTRAIS DISCRETOS -->
+  <line x1="16" y1="23.5" x2="16" y2="28.5" stroke="#0EA5E9" stroke-width="2" stroke-dasharray="1.5 2" opacity="0.45"/>
+  <line x1="36" y1="23.5" x2="36" y2="28.5" stroke="#0EA5E9" stroke-width="2" stroke-dasharray="1.5 2" opacity="0.45"/>
+
+
+  <!-- MÓDULO INFERIOR -->
+  <rect x="2.5" y="30" width="47" height="18.5" rx="4.5" fill="url(#serverBg)"/>
+  <rect x="2.5" y="30" width="47" height="18.5" rx="4.5" stroke="url(#serverStroke)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- LED 1: Status Online (Emerald Green) -->
+  <circle cx="10" cy="39.25" r="2.3" fill="#10B981" filter="url(#ledGlowGreen)"/>
+  <!-- LED 2: Atividade / Telemetria (Sky Blue) -->
+  <circle cx="16.5" cy="39.25" r="1.7" fill="#38BDF8"/>
+
+  <!-- Slots de Ventilação / Drive Bays -->
+  <line x1="25" y1="37" x2="42" y2="37" stroke="url(#slotGradient)" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="25" y1="41.5" x2="42" y2="41.5" stroke="url(#slotGradient)" stroke-width="2.2" stroke-linecap="round" opacity="0.8"/>
+</svg>

@@ -1,0 +1,48 @@
+.agents
+.vscode
+.impeccable
+.cursor
+.agent
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage
+.eslintcache
+
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+node_modules
+
+# OSX
+.DS_Store
+
+dist
+release
+release/app/dist
+release/build
+.erb/dll
+fluig-monitor
+
+.idea
+npm-debug.log.*
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts
+
+.env
+
+*.db
+*.db-journal
+
+src/main/generated
+
+data/*.db*
+data/*.sqlite*

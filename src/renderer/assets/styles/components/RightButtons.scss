@@ -1,0 +1,32 @@
+#rightButtons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  svg {
+    height: 1.1rem;
+    width: 1.1rem;
+  }
+
+  .optionButton {
+    flex: 1;
+    padding: 0.55rem;
+    background-color: var(--surface-subtle);
+    color: var(--font-secondary);
+    border: 1px solid var(--border-light);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 0.5rem;
+    transition: all var(--transition);
+
+    &:hover {
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+  }
+}
