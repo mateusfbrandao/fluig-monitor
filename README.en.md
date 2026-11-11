@@ -16,6 +16,7 @@
 
 **Native Rust & React desktop observability, telemetry, and real-time monitoring suite for TOTVS Fluig platforms.**
 
+[Download](#-download--installers) •
 [Features](#-key-features) •
 [Installation & Setup](#-running-the-project-in-development-mode) •
 [Architecture](#-project-structure) •
@@ -41,6 +42,38 @@ Telemetry is gathered directly and securely through official public REST APIs (`
 
 > [!NOTE]
 > **Disclaimer:** Fluig Monitor is an independent open-source observability project. It is not affiliated with, endorsed by, or officially associated with TOTVS S.A.
+
+---
+
+## 📦 Download & Installers
+
+The current stable release is **v1.0.0**. Download the installer for your platform from the [releases page](https://github.com/mateusfbrandao/fluig-monitor/releases/tag/v1.0.0):
+
+| Platform | Package | File |
+| --- | --- | --- |
+| Linux (Debian/Ubuntu) | `.deb` | [fluig-monitor_1.0.0_amd64.deb](https://github.com/mateusfbrandao/fluig-monitor/releases/download/v1.0.0/fluig-monitor_1.0.0_amd64.deb) |
+| Linux (Fedora/RHEL) | `.rpm` | [fluig-monitor-1.0.0-1.x86_64.rpm](https://github.com/mateusfbrandao/fluig-monitor/releases/download/v1.0.0/fluig-monitor-1.0.0-1.x86_64.rpm) |
+| Linux (universal) | `.AppImage` | [fluig-monitor_1.0.0_amd64.AppImage](https://github.com/mateusfbrandao/fluig-monitor/releases/download/v1.0.0/fluig-monitor_1.0.0_amd64.AppImage) |
+| Windows (x64) | NSIS installer | [fluig-monitor_1.0.0_x64-setup.exe](https://github.com/mateusfbrandao/fluig-monitor/releases/download/v1.0.0/fluig-monitor_1.0.0_x64-setup.exe) |
+
+### Quick install
+
+```bash
+# Debian / Ubuntu
+sudo apt install ./fluig-monitor_1.0.0_amd64.deb
+
+# Fedora / RHEL
+sudo rpm -i fluig-monitor-1.0.0-1.x86_64.rpm
+
+# AppImage
+chmod +x fluig-monitor_1.0.0_amd64.AppImage
+./fluig-monitor_1.0.0_amd64.AppImage
+```
+
+On Windows, run `fluig-monitor_1.0.0_x64-setup.exe` and complete the installer wizard.
+
+> [!TIP]
+> Official releases are published at [github.com/mateusfbrandao/fluig-monitor/releases](https://github.com/mateusfbrandao/fluig-monitor/releases).
 
 ---
 
