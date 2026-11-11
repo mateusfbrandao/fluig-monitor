@@ -82,17 +82,16 @@ export default function EnvironmentAvailabilityPanel() {
   let statusIcon = <FiWifiOff aria-hidden="true" />;
 
   if (isLoading && lastHttpResponse === null) {
-    statusTitle = t('components.global.loading') || 'Carregando...';
-    statusSubtitle = t('components.EnvironmentStatusCard.checking') || 'Verificando telemetria do ambiente...';
+    statusTitle = t('components.EnvironmentStatusCard.checking');
+    statusSubtitle = t('components.EnvironmentStatusCard.checkingHelper');
     statusColorClass = 'text-secondary';
     badgeClass = 'is-loading';
     statusIcon = <FiActivity aria-hidden="true" />;
   } else if (lastHttpResponse && lastHttpResponse.statusCode !== 0) {
     if (lastHttpResponse.statusCode >= 500) {
-      statusTitle = t('components.EnvironmentStatusCard.serviceDown', 'Serviço Inoperante');
+      statusTitle = t('components.EnvironmentStatusCard.serviceDown');
       statusSubtitle = t(
-        'components.EnvironmentStatusCard.serverError',
-        'Falha no servidor Fluig (HTTP %http%)'
+        'components.EnvironmentStatusCard.serverError'
       ).replace('%http%', String(lastHttpResponse.statusCode));
       statusColorClass = 'text-red';
       badgeClass = 'has-danger';
@@ -132,66 +131,59 @@ export default function EnvironmentAvailabilityPanel() {
   if (isLoading && lastHttpResponse === null) {
     footerContent = (
       <span className="mono-latency">
-        {t('components.global.loading') || 'Carregando telemetria...'}
+        {t('components.EnvironmentStatusCard.checkingHelper')}
       </span>
     );
   } else if (lastHttpResponse !== null) {
-    if (lastHttpResponse.statusCode === 200) {
-      footerContent = (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
+    const detail =
+      lastHttpResponse.statusCode === 200
+        ? t('components.EnvironmentStatusCard.responseTime').replace(
+            '%responseTime%',
+            String(lastHttpResponse.responseTimeMs)
+          )
+        : lastHttpResponse.statusMessage ||
+          t('components.EnvironmentStatusCard.httpFallback', {
+            http: lastHttpResponse.statusCode,
+          });
+
+    footerContent = (
+      <div className="status-footer-row">
+        <span
+          className={
+            lastHttpResponse.statusCode === 200 ? 'mono-latency' : 'text-red'
+          }
         >
-          <span className="mono-latency">
-            {t('components.EnvironmentStatusCard.responseTime').replace(
-              '%responseTime%',
-              String(lastHttpResponse.responseTimeMs)
-            )}
-          </span>
-          <TimeIndicator date={lastHttpResponse.timestamp} noMargin />
-        </div>
-      );
-    } else {
-      footerContent = (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <span className="text-red" style={{ fontWeight: 600 }}>
-            {lastHttpResponse.statusMessage || `HTTP ${lastHttpResponse.statusCode} (Sem resposta)`}
-          </span>
-          <TimeIndicator date={lastHttpResponse.timestamp} noMargin />
-        </div>
-      );
-    }
+          {detail}
+        </span>
+        <TimeIndicator date={lastHttpResponse.timestamp} noMargin />
+      </div>
+    );
   }
 
   return (
     <div className="card environment-status-card">
       <div className="header">
         <div className="header-left">
-          <div className="icon-dot purple-variant">
+          <div className="icon-dot neutral-variant">
             <FiActivity aria-hidden="true" />
           </div>
-          <span className="text-purple">
+          <span className="panel-title">
             {t('components.EnvironmentStatusCard.title')}
           </span>
         </div>
         {uptimePct !== null && (
-          <span className="uptime-pill-badge">{uptimePct}% Uptime</span>
+          <span className="uptime-pill-badge">
+            {t('components.EnvironmentStatusCard.uptimePct', {
+              pct: uptimePct,
+            })}
+          </span>
         )}
       </div>
 
       <div className="body">
         <div className="status-message">
           <h3 className={statusColorClass}>{statusTitle}</h3>
-          <span className="text-secondary">{statusSubtitle}</span>
+          <span className="status-subtitle">{statusSubtitle}</span>
         </div>
         <div className={`status-icon ${badgeClass}`}>{statusIcon}</div>
       </div>
@@ -200,30 +192,30 @@ export default function EnvironmentAvailabilityPanel() {
         <div
           className="status-heatmap-strip"
           role="region"
-          aria-label={
-            t('components.EnvironmentStatusCard.uptimeStripAria') ||
-            'Histórico de disponibilidade recente'
-          }
+          aria-label={t('components.EnvironmentStatusCard.uptimeStripAria')}
         >
           {recentPings.map((ping) => {
             let segmentClass = 'is-ok';
-            let statusLabel = 'Operacional';
+            let statusLabel = t(
+              'components.EnvironmentStatusCard.segmentOperational'
+            );
             if (ping.responseTimeMs <= 0 || ping.statusCode !== 200) {
               segmentClass = 'is-down';
-              statusLabel = 'Indisponível / Timeout';
+              statusLabel = t('components.EnvironmentStatusCard.segmentDown');
             } else if (ping.responseTimeMs > 800) {
               segmentClass = 'is-slow';
-              statusLabel = 'Alta latência';
+              statusLabel = t('components.EnvironmentStatusCard.segmentSlow');
             }
             const timeLabel = formatTimeLocale(ping.timestamp);
             const latencyLabel =
-              ping.responseTimeMs > 0 ? `${ping.responseTimeMs}ms` : 'Timeout';
+              ping.responseTimeMs > 0
+                ? `${ping.responseTimeMs}ms`
+                : t('components.EnvironmentStatusCard.timeout');
             return (
               <span
                 key={ping.id}
                 className={`heatmap-segment ${segmentClass}`}
                 role="img"
-                tabIndex={0}
                 aria-label={`${timeLabel} - ${statusLabel} (${latencyLabel})`}
                 title={`${timeLabel} · ${statusLabel} (${latencyLabel})`}
               />

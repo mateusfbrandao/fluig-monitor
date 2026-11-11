@@ -13,14 +13,17 @@ import { EnvironmentArtifactsData } from '../../../common/interfaces/Environment
 
 type ArtifactCategory = 'apps' | 'core' | 'system';
 
-function parseArtifactMap(rawJson: string | null): [string, string][] {
+function parseArtifactMap(
+  rawJson: string | null,
+  unknownLabel: string
+): [string, string][] {
   if (!rawJson) return [];
   try {
     const parsed = JSON.parse(rawJson);
     if (Array.isArray(parsed)) {
       return parsed.map((item) => {
         if (typeof item === 'object' && item !== null) {
-          const name = item.name || item.artifact || item.id || 'Desconhecido';
+          const name = item.name || item.artifact || item.id || unknownLabel;
           const detail =
             item.md5 || item.signature || item.version || JSON.stringify(item);
           return [String(name), String(detail)];
@@ -81,14 +84,17 @@ function EnvironmentArtifactsContainer() {
     if (category === 'core') sourceJson = latest.artifactsCore;
     if (category === 'system') sourceJson = latest.artifactsSystem;
 
-    const entries = parseArtifactMap(sourceJson);
+    const entries = parseArtifactMap(
+      sourceJson,
+      t('components.EnvironmentArtifacts.unknown')
+    );
     if (!searchQuery.trim()) return entries;
     const lower = searchQuery.toLowerCase();
     return entries.filter(
       ([name, val]) =>
         name.toLowerCase().includes(lower) || val.toLowerCase().includes(lower)
     );
-  }, [latest, category, searchQuery]);
+  }, [latest, category, searchQuery, t]);
 
   if (loading) {
     return <SpinnerLoader />;
@@ -109,11 +115,13 @@ function EnvironmentArtifactsContainer() {
     <DefaultMotionDiv id="environment-artifacts-container">
       <h3>{t('components.EnvironmentArtifacts.title')}</h3>
 
-      <div className="data-table-card">
+      <div className="data-table-card artifacts-panel">
         <div className="table-toolbar">
-          <div className="time-range-selector">
+          <div className="time-range-selector" role="tablist">
             <button
               type="button"
+              role="tab"
+              aria-selected={category === 'apps'}
               className={category === 'apps' ? 'active' : ''}
               onClick={() => setCategory('apps')}
             >
@@ -121,6 +129,8 @@ function EnvironmentArtifactsContainer() {
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={category === 'core'}
               className={category === 'core' ? 'active' : ''}
               onClick={() => setCategory('core')}
             >
@@ -128,6 +138,8 @@ function EnvironmentArtifactsContainer() {
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={category === 'system'}
               className={category === 'system' ? 'active' : ''}
               onClick={() => setCategory('system')}
             >
@@ -140,21 +152,16 @@ function EnvironmentArtifactsContainer() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('components.EnvironmentArtifacts.searchPlaceholder')}
+            aria-label={t('components.EnvironmentArtifacts.searchPlaceholder')}
           />
         </div>
 
-        <p
-          style={{
-            fontSize: '0.8rem',
-            color: 'var(--font-soft)',
-            marginBottom: '0.75rem',
-          }}
-        >
+        <p className="artifacts-count">
           {t('components.EnvironmentArtifacts.totalCount')}:{' '}
-          <b>{items.length}</b>
+          <strong>{items.length}</strong>
         </p>
 
-        <div style={{ maxHeight: '55vh', overflowY: 'auto' }}>
+        <div className="artifacts-table-scroll">
           <table>
             <thead>
               <tr>
@@ -163,19 +170,25 @@ function EnvironmentArtifactsContainer() {
               </tr>
             </thead>
             <tbody>
-              {items.map(([name, detail]) => (
-                <tr key={name}>
-                  <td>{name}</td>
-                  <td style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
-                    {detail}
+              {items.length === 0 ? (
+                <tr>
+                  <td colSpan={2} className="artifacts-empty">
+                    {t('components.EnvironmentArtifacts.noResults')}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                items.map(([name, detail]) => (
+                  <tr key={name}>
+                    <td>{name}</td>
+                    <td className="mono-cell">{detail || '—'}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        <div style={{ marginTop: '1rem' }}>
+        <div className="artifacts-footer">
           <TimeIndicator date={latest.httpResponse.timestamp} noMargin />
         </div>
       </div>

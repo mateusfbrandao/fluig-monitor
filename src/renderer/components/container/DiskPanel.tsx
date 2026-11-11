@@ -55,9 +55,7 @@ function DiskPanel() {
       ? Number(diskInfo[0].systemServerHDSize)
       : 0;
   const diskPct =
-    totalDiskBytes > 0
-      ? Math.round((usedDiskBytes / totalDiskBytes) * 100)
-      : 0;
+    totalDiskBytes > 0 ? Math.round((usedDiskBytes / totalDiskBytes) * 100) : 0;
 
   return (
     <div
@@ -71,7 +69,9 @@ function DiskPanel() {
           navigate(`/environment/${environmentId}/runtimeStats`);
         }
       }}
-      aria-label={`${t('components.SystemResources.Disk.title')} - Abrir estatísticas de runtime e servidor`}
+      aria-label={`${t('components.SystemResources.Disk.title')} - ${t(
+        'components.SystemResources.Disk.openRuntime'
+      )}`}
     >
       <div className="header">
         <div className="header-left">

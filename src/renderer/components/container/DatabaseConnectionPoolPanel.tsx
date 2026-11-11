@@ -48,6 +48,12 @@ function parsePool(raw: string | null | undefined): PoolMetrics | null {
   }
 }
 
+function poolTone(utilization: number): 'ok' | 'warn' | 'critical' {
+  if (utilization >= 85) return 'critical';
+  if (utilization >= 60) return 'warn';
+  return 'ok';
+}
+
 export default function DatabaseConnectionPoolPanel() {
   const { t } = useTranslation();
   const location = useLocation();
@@ -78,143 +84,89 @@ export default function DatabaseConnectionPoolPanel() {
 
   const fluigDs = parsePool(dbProps?.dataSourceFluigDs);
   const fluigDsRo = parsePool(dbProps?.dataSourceFluigDsRo);
-
   const currentPool = activeTab === 'fluigDs' ? fluigDs : fluigDsRo;
 
   if (!fluigDs && !fluigDsRo) {
     return null;
   }
 
-  const getStatusBadge = (utilization: number) => {
-    if (utilization >= 85) {
-      return {
-        label: t(
-          'components.SystemResources.DatabaseConnectionPools.statusCritical'
-        ),
-        color: '#ef4444',
-        bg: 'rgba(239, 68, 68, 0.15)',
-        border: 'rgba(239, 68, 68, 0.4)',
-      };
-    }
-    if (utilization >= 60) {
-      return {
-        label: t(
-          'components.SystemResources.DatabaseConnectionPools.statusWarning'
-        ),
-        color: '#eab308',
-        bg: 'rgba(234, 179, 8, 0.15)',
-        border: 'rgba(234, 179, 8, 0.4)',
-      };
-    }
-    return {
-      label: t(
-        'components.SystemResources.DatabaseConnectionPools.statusHealthy'
-      ),
-      color: '#10b981',
-      bg: 'rgba(16, 185, 129, 0.15)',
-      border: 'rgba(16, 185, 129, 0.4)',
-    };
-  };
+  const tone = currentPool ? poolTone(currentPool.utilization) : 'ok';
+  let statusLabel = t(
+    'components.SystemResources.DatabaseConnectionPools.statusHealthy'
+  );
+  if (tone === 'critical') {
+    statusLabel = t(
+      'components.SystemResources.DatabaseConnectionPools.statusCritical'
+    );
+  } else if (tone === 'warn') {
+    statusLabel = t(
+      'components.SystemResources.DatabaseConnectionPools.statusWarning'
+    );
+  }
 
-  const status = currentPool ? getStatusBadge(currentPool.utilization) : null;
+  const metrics = currentPool
+    ? [
+        {
+          label: t(
+            'components.SystemResources.DatabaseConnectionPools.activeConnections'
+          ),
+          value: String(currentPool.activeCount),
+          emphasize: currentPool.activeCount > 0,
+        },
+        {
+          label: t(
+            'components.SystemResources.DatabaseConnectionPools.availableConnections'
+          ),
+          value: String(currentPool.availableCount),
+        },
+        {
+          label: t(
+            'components.SystemResources.DatabaseConnectionPools.maxUsedConnections'
+          ),
+          value: String(currentPool.maxUsedCount),
+        },
+        {
+          label: t(
+            'components.SystemResources.DatabaseConnectionPools.poolLimits'
+          ),
+          value: `${currentPool.minPoolSize} / ${currentPool.maxPoolSize}`,
+        },
+        {
+          label: t(
+            'components.SystemResources.DatabaseConnectionPools.createdConnections'
+          ),
+          value: String(currentPool.createdCount),
+        },
+      ]
+    : [];
 
   return (
-    <div
-      className="widget-container database-pool-widget"
-      style={{
-        marginBottom: '2rem',
-        borderRadius: '12px',
-        backgroundColor: 'var(--card-bg)',
-        border: '1px solid var(--card-border)',
-        padding: '1.25rem',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          marginBottom: '1rem',
-        }}
-      >
-        <h3
-          style={{
-            margin: 0,
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          <span style={{ color: 'var(--color-primary)' }}>⚡</span>
+    <div className="widget-container database-pool-widget">
+      <div className="pool-header">
+        <h3 className="title">
           {t('components.SystemResources.DatabaseConnectionPools.title')}
         </h3>
-
-        {status && (
-          <span
-            style={{
-              padding: '0.25rem 0.75rem',
-              borderRadius: '9999px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: status.color,
-              backgroundColor: status.bg,
-              border: `1px solid ${status.border}`,
-              letterSpacing: '0.025em',
-            }}
-          >
-            {status.label}
-          </span>
+        {currentPool && (
+          <span className={`pool-status-badge is-${tone}`}>{statusLabel}</span>
         )}
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          marginBottom: '1.25rem',
-          borderBottom: '1px solid var(--card-border)',
-          paddingBottom: '0.5rem',
-        }}
-      >
+      <div className="pool-tabs" role="tablist">
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'fluigDs'}
+          className={activeTab === 'fluigDs' ? 'active' : ''}
           onClick={() => setActiveTab('fluigDs')}
-          style={{
-            background:
-              activeTab === 'fluigDs' ? 'var(--color-primary)' : 'transparent',
-            color: activeTab === 'fluigDs' ? '#ffffff' : 'var(--font-soft)',
-            border: 'none',
-            padding: '0.4rem 0.85rem',
-            borderRadius: '6px',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
         >
           {t('components.SystemResources.DatabaseConnectionPools.fluigDs')}
         </button>
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'fluigDsRo'}
+          className={activeTab === 'fluigDsRo' ? 'active' : ''}
           onClick={() => setActiveTab('fluigDsRo')}
-          style={{
-            background:
-              activeTab === 'fluigDsRo'
-                ? 'var(--color-primary)'
-                : 'transparent',
-            color: activeTab === 'fluigDsRo' ? '#ffffff' : 'var(--font-soft)',
-            border: 'none',
-            padding: '0.4rem 0.85rem',
-            borderRadius: '6px',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
         >
           {t('components.SystemResources.DatabaseConnectionPools.fluigDsRo')}
         </button>
@@ -222,209 +174,45 @@ export default function DatabaseConnectionPoolPanel() {
 
       {currentPool ? (
         <>
-          <div style={{ marginBottom: '1.25rem' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '0.85rem',
-                marginBottom: '0.4rem',
-              }}
-            >
-              <span style={{ color: 'var(--font-soft)' }}>
+          <div className="pool-utilization">
+            <div className="pool-utilization-head">
+              <span>
                 {t(
                   'components.SystemResources.DatabaseConnectionPools.utilization'
                 )}
               </span>
-              <span style={{ fontWeight: 700, color: status?.color }}>
+              <strong className={`is-${tone}`}>
                 {currentPool.activeCount} / {currentPool.maxPoolSize} (
                 {currentPool.utilization}%)
-              </span>
+              </strong>
             </div>
-            <div
-              style={{
-                height: '10px',
-                width: '100%',
-                borderRadius: '5px',
-                backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                overflow: 'hidden',
-              }}
-            >
+            <div className="pool-progress-track">
               <div
+                className={`pool-progress-fill is-${tone}`}
                 style={{
-                  height: '100%',
                   width: `${Math.max(2, currentPool.utilization)}%`,
-                  backgroundColor: status?.color || 'var(--color-primary)',
-                  borderRadius: '5px',
-                  transition: 'width 0.5s ease',
-                  boxShadow: `0 0 10px ${
-                    status?.color || 'var(--color-primary)'
-                  }`,
                 }}
               />
             </div>
           </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-              gap: '0.75rem',
-              marginBottom: '1rem',
-            }}
-          >
-            <div
-              style={{
-                padding: '0.75rem',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--card-border)',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--font-soft)',
-                  display: 'block',
-                }}
-              >
-                {t(
-                  'components.SystemResources.DatabaseConnectionPools.activeConnections'
-                )}
-              </span>
-              <span
-                style={{
-                  fontSize: '1.25rem',
-                  fontWeight: 800,
-                  color:
-                    currentPool.activeCount > 0 ? status?.color : 'inherit',
-                }}
-              >
-                {currentPool.activeCount}
-              </span>
-            </div>
+          <dl className="pool-spec">
+            {metrics.map((item) => (
+              <div className="pool-spec-item" key={item.label}>
+                <dt>{item.label}</dt>
+                <dd className={item.emphasize ? `is-${tone}` : undefined}>
+                  {item.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
 
-            <div
-              style={{
-                padding: '0.75rem',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--card-border)',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--font-soft)',
-                  display: 'block',
-                }}
-              >
-                {t(
-                  'components.SystemResources.DatabaseConnectionPools.availableConnections'
-                )}
-              </span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-                {currentPool.availableCount}
-              </span>
-            </div>
-
-            <div
-              style={{
-                padding: '0.75rem',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--card-border)',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--font-soft)',
-                  display: 'block',
-                }}
-              >
-                {t(
-                  'components.SystemResources.DatabaseConnectionPools.maxUsedConnections'
-                )}
-              </span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-                {currentPool.maxUsedCount}
-              </span>
-            </div>
-
-            <div
-              style={{
-                padding: '0.75rem',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--card-border)',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--font-soft)',
-                  display: 'block',
-                }}
-              >
-                {t(
-                  'components.SystemResources.DatabaseConnectionPools.poolLimits'
-                )}
-              </span>
-              <span
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  fontFamily: 'monospace',
-                }}
-              >
-                {currentPool.minPoolSize} / {currentPool.maxPoolSize}
-              </span>
-            </div>
-
-            <div
-              style={{
-                padding: '0.75rem',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--card-border)',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  color: 'var(--font-soft)',
-                  display: 'block',
-                }}
-              >
-                {t(
-                  'components.SystemResources.DatabaseConnectionPools.createdConnections'
-                )}
-              </span>
-              <span style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-                {currentPool.createdCount}
-              </span>
-            </div>
-          </div>
-
-          <div
-            style={{
-              fontSize: '0.78rem',
-              color: 'var(--font-soft)',
-              backgroundColor: 'rgba(56, 189, 248, 0.06)',
-              borderLeft: '3px solid #38bdf8',
-              padding: '0.5rem 0.75rem',
-              borderRadius: '0 6px 6px 0',
-              lineHeight: 1.4,
-            }}
-          >
+          <p className="pool-tip">
             {t('components.SystemResources.DatabaseConnectionPools.tip')}
-          </div>
+          </p>
         </>
       ) : (
-        <p style={{ color: 'var(--font-soft)', fontSize: '0.85rem' }}>
-          {t('components.global.noData')}
-        </p>
+        <p className="pool-empty">{t('components.global.noData')}</p>
       )}
     </div>
   );

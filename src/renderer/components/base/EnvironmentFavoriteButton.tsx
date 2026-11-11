@@ -16,55 +16,72 @@ export default function EnvironmentFavoriteButton({
 }: Props) {
   const { createShortNotification } = useNotifications();
   const { updateEnvironmentList } = useEnvironmentList();
-  const [favoriteStar, setFavoriteStar] = useState(
-    isFavorite ? <AiFillStar /> : <AiOutlineStar />
-  );
+  const [favorite, setFavorite] = useState(isFavorite);
 
   const { t } = useTranslation();
 
   useEffect(() => {
-    setFavoriteStar(isFavorite ? <AiFillStar /> : <AiOutlineStar />);
+    setFavorite(isFavorite);
   }, [isFavorite]);
 
   async function toggleFavoriteEnvironment(id: number) {
-    const { favorited, exception } = await toggleEnvironmentFavorite(id);
+    try {
+      const result = await toggleEnvironmentFavorite(id);
+      const favorited = Boolean(result?.favorited);
+      const exception = result?.exception ?? null;
 
-    if (exception === 'MAX_FAVORITES_EXCEEDED') {
+      if (exception === 'MAX_FAVORITES_EXCEEDED') {
+        createShortNotification({
+          id: Date.now(),
+          message: t('helpMessages.environments.maximumExceeded'),
+          type: 'warning',
+        });
+        return;
+      }
+
+      if (exception === 'TOGGLE_FAILED') {
+        createShortNotification({
+          id: Date.now(),
+          message: t(
+            'helpMessages.environments.toggleFailed',
+            'Não foi possível atualizar o favorito.'
+          ),
+          type: 'danger',
+        });
+        return;
+      }
+
+      setFavorite(favorited);
       createShortNotification({
         id: Date.now(),
-        message: t('helpMessages.environments.maximumExceeded'),
-        type: 'warning',
-      });
-
-      return;
-    }
-
-    if (favorited) {
-      createShortNotification({
-        id: Date.now(),
-        message: t('helpMessages.environments.added'),
+        message: favorited
+          ? t('helpMessages.environments.added')
+          : t('helpMessages.environments.removed'),
         type: 'success',
       });
-      setFavoriteStar(<AiFillStar />);
-    } else {
+
+      updateEnvironmentList();
+    } catch (err: unknown) {
+      const detail = err instanceof Error ? err.message : '';
       createShortNotification({
         id: Date.now(),
-        message: t('helpMessages.environments.removed'),
-        type: 'success',
+        message:
+          t(
+            'helpMessages.environments.toggleFailed',
+            'Não foi possível atualizar o favorito.'
+          ) + (detail ? ` (${detail})` : ''),
+        type: 'danger',
       });
-      setFavoriteStar(<AiOutlineStar />);
     }
-
-    updateEnvironmentList();
   }
 
   return (
     <button
       type="button"
       onClick={() => toggleFavoriteEnvironment(environmentId)}
-      className={`favorite-btn ${isFavorite ? 'is-fav' : ''}`}
+      className={`favorite-btn${favorite ? ' is-fav' : ''}`}
       title={
-        isFavorite
+        favorite
           ? t(
               'helpMessages.environments.removeFavorite',
               'Remover dos favoritos'
@@ -74,8 +91,9 @@ export default function EnvironmentFavoriteButton({
               'Adicionar aos favoritos'
             )
       }
+      aria-pressed={favorite}
     >
-      {favoriteStar}
+      {favorite ? <AiFillStar /> : <AiOutlineStar />}
     </button>
   );
 }

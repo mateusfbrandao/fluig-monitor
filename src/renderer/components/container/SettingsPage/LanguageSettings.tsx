@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { useTranslation } from 'react-i18next';
-import { FiCheck, FiGlobe } from 'react-icons/fi';
+import { FiGlobe } from 'react-icons/fi';
 
 import DefaultMotionDiv from '../../base/DefaultMotionDiv';
 
@@ -16,14 +16,16 @@ export default function LanguageSettings() {
   return (
     <DefaultMotionDiv id="language-settings">
       <h3 className="icon-title">
-        <span className="icon-dot blue-variant">
+        <span className="icon-dot neutral-variant">
           <FiGlobe />
         </span>
         {t('components.LanguageSettings.title')}
       </h3>
-      <p className="mb-2">{t('components.LanguageSettings.helperText')}</p>
+      <p className="settings-section-helper">
+        {t('components.LanguageSettings.helperText')}
+      </p>
 
-      <div className="language-options-grid">
+      <div className="language-options-grid" role="radiogroup">
         <label
           htmlFor="radioLanguage_pt"
           className={`language-card ${
@@ -38,17 +40,14 @@ export default function LanguageSettings() {
             onChange={() => dispatchLanguageChange('pt')}
             className="visually-hidden"
           />
-          {i18n.language === 'pt' && (
-            <div className="theme-check-badge">
-              <FiCheck />
-            </div>
-          )}
-          <div className="lang-flag-preview">
-            <span className="lang-emoji">🇧🇷</span>
+          <div className="lang-code-preview" aria-hidden="true">
+            <span className="lang-code">PT</span>
           </div>
           <div className="theme-card-info">
             <span className="theme-name">{t('menu.languages.pt')}</span>
-            <span className="theme-desc">Português (Brasil)</span>
+            <span className="theme-desc">
+              {t('components.LanguageSettings.ptDesc')}
+            </span>
           </div>
         </label>
 
@@ -66,17 +65,14 @@ export default function LanguageSettings() {
             onChange={() => dispatchLanguageChange('en')}
             className="visually-hidden"
           />
-          {i18n.language === 'en' && (
-            <div className="theme-check-badge">
-              <FiCheck />
-            </div>
-          )}
-          <div className="lang-flag-preview">
-            <span className="lang-emoji">🇺🇸</span>
+          <div className="lang-code-preview" aria-hidden="true">
+            <span className="lang-code">EN</span>
           </div>
           <div className="theme-card-info">
             <span className="theme-name">{t('menu.languages.en')}</span>
-            <span className="theme-desc">English (US)</span>
+            <span className="theme-desc">
+              {t('components.LanguageSettings.enDesc')}
+            </span>
           </div>
         </label>
       </div>

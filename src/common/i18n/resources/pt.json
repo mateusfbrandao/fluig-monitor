@@ -59,6 +59,8 @@
       "unableToEncrypt": "Não foi possível criptografar as chaves de autenticação",
       "form": {
         "title": "Incluir um novo ambiente",
+        "subtitle": "Cadastre identidade, autenticação OAuth e frequências de monitoramento.",
+        "scheduleSection": "Frequências de monitoramento",
         "environmentDataSection": "Dados do ambiente",
         "environmentName": {
           "label": "Nome do ambiente:",
@@ -139,6 +141,8 @@
       "unableToEncrypt": "Não foi possível criptografar as chaves de autenticação",
       "form": {
         "title": "Editar ambiente",
+        "subtitle": "Identidade, autenticação OAuth e frequências de coleta deste ambiente.",
+        "scheduleSection": "Frequências de monitoramento",
         "environmentDataSection": "Dados do ambiente",
         "environmentName": {
           "label": "Nome do ambiente:",
@@ -206,10 +210,52 @@
       }
     },
     "HomeEnvironmentListView": {
-      "header": "Seus Ambientes",
-      "createEnvironmentHelper": "Inclua um novo ambiente utilizando o botão ao lado."
+      "header": "Seus ambientes",
+      "subtitleEmpty": "Nenhum ambiente monitorado ainda.",
+      "subtitleAllOnline": "{{count}} ambientes online.",
+      "subtitleWithOffline": "{{online}} de {{total}} online · {{offline}} offline.",
+      "syncAll": "Sincronizar",
+      "syncing": "Sincronizando...",
+      "addEnvironment": "Novo ambiente",
+      "searchPlaceholder": "Filtrar por nome, URL ou release",
+      "viewGrid": "Visão em grade",
+      "viewTable": "Visão em tabela",
+      "noResults": "Nenhum ambiente corresponde ao filtro.",
+      "emptyTitle": "Comece pelo primeiro ambiente",
+      "emptyHelper": "Cadastre uma instância Fluig para acompanhar latência, uptime e saúde em tempo real.",
+      "createEnvironmentHelper": "Inclua um novo ambiente utilizando o botão ao lado.",
+      "pingNow": "Verificar agora",
+      "openMonitor": "Abrir monitor",
+      "openSettings": "Configurações",
+      "filters": {
+        "all": "Todos",
+        "favorites": "Favoritos"
+      },
+      "kpis": {
+        "status": "Status global",
+        "onlinePct": "{{pct}}% online",
+        "avgLatency": "Latência média",
+        "peakLatency": "Pico de resposta",
+        "distribution": "Distribuição"
+      },
+      "status": {
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "card": {
+        "uptime": "Uptime recente"
+      },
+      "table": {
+        "status": "Status",
+        "environment": "Ambiente",
+        "kind": "Tipo",
+        "release": "Release",
+        "latency": "Latência",
+        "actions": "Ações"
+      }
     },
     "EnvironmentDataContainer": {
+      "tabsNav": "Seções do ambiente",
       "sideMenu": {
         "summary": "Resumo",
         "database": "Banco De Dados",
@@ -248,7 +294,10 @@
     "environments": {
       "maximumExceeded": "Você só pode favoritar até 3 ambientes.",
       "added": "Ambiente adicionado aos favoritos.",
-      "removed": "Ambiente removido dos favoritos."
+      "removed": "Ambiente removido dos favoritos.",
+      "toggleFailed": "Não foi possível atualizar o favorito.",
+      "addFavorite": "Adicionar aos favoritos",
+      "removeFavorite": "Remover dos favoritos"
     }
   },
   "components": {
@@ -266,7 +315,8 @@
       "processor": "Processador",
       "memory": "Memória",
       "disk": "Disco",
-      "activityTime": "Tempo De Atividade",
+      "activityTime": "Uptime",
+      "cores": "{{count}} cores",
       "activityTimeDescription": "%days% dias, %hours% horas, %minutes% minutos",
       "noDataDueToVersion": "Dados do servidor indisponíveis para esta versão do Fluig."
     },
@@ -282,10 +332,21 @@
       "attention": "Atenção",
       "operational": "Operacional",
       "unavailable": "Indisponível",
+      "serviceDown": "Serviço inoperante",
+      "serverError": "Falha no servidor Fluig (HTTP %http%)",
+      "checking": "Verificando...",
+      "checkingHelper": "Lendo telemetria do ambiente.",
       "operatingCorrectly": "O servidor está online e operando corretamente.",
       "highResponseTime": "O servidor está online, porém apresenta um tempo de resposta incomum.",
       "noSatisfactoryResponse": "O servidor está online, porém não apresenta uma resposta satisfatória (HTTP %http%).",
-      "mayBeOffline": "É possível que o servidor esteja offline, veja detalhes abaixo: "
+      "mayBeOffline": "É possível que o servidor esteja offline. Veja os detalhes abaixo.",
+      "uptimePct": "{{pct}}% uptime",
+      "uptimeStripAria": "Histórico de disponibilidade recente",
+      "segmentOperational": "Operacional",
+      "segmentDown": "Indisponível / timeout",
+      "segmentSlow": "Alta latência",
+      "timeout": "Timeout",
+      "httpFallback": "HTTP {{http}} (sem resposta)"
     },
     "EnvironmentStatusSummary": {
       "updatedAt": "Atualizado às",
@@ -295,18 +356,21 @@
       "Disk": {
         "title": "Disco",
         "used": "Usado",
-        "outOf": "de"
+        "outOf": "de",
+        "openRuntime": "Abrir estatísticas de runtime e servidor"
       },
       "Memory": {
         "title": "Memória",
         "used": "Usado",
-        "outOf": "de"
+        "outOf": "de",
+        "openDetailed": "Abrir métricas detalhadas de memória"
       },
       "Database": {
-        "title": "Banco De Dados",
+        "title": "Banco de dados",
         "size": "Tamanho",
         "traffic": "Tráfego",
-        "trafficNotAllowed": "Tráfego indisponível"
+        "trafficNotAllowed": "Tráfego indisponível",
+        "openDetailed": "Abrir métricas detalhadas do banco de dados"
       },
       "DatabasePropsPanel": {
         "title": "Banco de dados",
@@ -316,7 +380,7 @@
         "dbDriverVersion": "Versão Do Driver:"
       },
       "DatabaseConnectionPools": {
-        "title": "Pools de Conexões JDBC (WildFly)",
+        "title": "Pools JDBC",
         "fluigDs": "Pool FluigDS (Principal / Escrita)",
         "fluigDsRo": "Pool FluigDSRO (Somente Leitura)",
         "activeConnections": "Ativas",
@@ -352,68 +416,95 @@
     },
     "ThemeSettings": {
       "title": "Tema",
-      "helperText": "Selecione o tema de exibição da interface:",
+      "helperText": "Aparência da interface.",
       "systemTheme": "Sistema",
       "systemThemeDesc": "Automático",
-      "whiteTheme": "Tema Claro",
+      "whiteTheme": "Claro",
       "whiteThemeDesc": "Modo diurno",
-      "darkTheme": "Tema Escuro",
+      "darkTheme": "Escuro",
       "darkThemeDesc": "Modo noturno"
     },
     "UpdatesSettings": {
       "title": "Atualizações",
-      "helperText": "Aqui você poderá escolher como a aplicação deverá se comportar com as atualizações.",
+      "helperText": "Defina o download e a instalação das novas versões.",
       "enableAutoDownload": {
-        "label": "Baixar atualizações automaticamente.",
-        "helper": "Ao habilitar esta opção, o Fluig Monitor irá baixar as atualizações disponível automaticamente."
+        "label": "Baixar atualizações automaticamente",
+        "helper": "Baixa novas versões em segundo plano quando estiverem disponíveis."
       },
       "enableAutoInstall": {
-        "label": "Instalar atualizações automaticamente.",
-        "helper": "Ao habilitar esta opção, o Fluig Monitor irá instalar as atualizações automaticamente após efetuar o download."
+        "label": "Instalar atualizações automaticamente",
+        "helper": "Instala a versão baixada sem intervenção manual."
       },
       "updateFrequency": {
-        "helper": "As atualizações são sempre verificadas diariamente."
+        "helper": "A verificação automática ocorre uma vez por dia."
       },
-      "checkNow": "Verificar se há atualizações agora",
-      "checkingNow": "Verificando atualizações...",
+      "checkNow": "Verificar agora",
+      "checkingNow": "Verificando...",
       "checkCompleted": "Verificação enviada. Se houver novidades, uma notificação será exibida."
     },
     "StorageSettings": {
-      "title": "Armazenamento & Retenção de Dados",
-      "helperText": "Configure o período de retenção do histórico no banco SQLite local para manter a aplicação rápida e leve.",
+      "title": "Armazenamento",
+      "helperText": "Retenção do histórico local no SQLite para manter a aplicação leve.",
       "kpis": {
-        "dbSize": "Tamanho do Banco",
-        "pingRecords": "Registros de Ping",
-        "snapshots": "Snapshots de Métricas"
+        "dbSize": "Tamanho do banco",
+        "pingRecords": "Registros de ping",
+        "snapshots": "Snapshots"
       },
       "pingRetention": {
-        "label": "Histórico de Pings / Latência:",
-        "helper": "Registros mais antigos que este intervalo serão expurgados."
+        "label": "Histórico de pings e latência",
+        "helper": "Registros mais antigos que este intervalo serão expurgados.",
+        "options": {
+          "days3": "3 dias",
+          "days7Recommended": "7 dias (recomendado)",
+          "days14": "14 dias",
+          "days30": "30 dias"
+        }
       },
       "statsRetention": {
-        "label": "Histórico de Métricas e Licenças:",
-        "helper": "Estatísticas, threads e consumo de memória consolidados."
+        "label": "Histórico de métricas e licenças",
+        "helper": "Estatísticas, threads e consumo de memória consolidados.",
+        "options": {
+          "days15": "15 dias",
+          "days30Recommended": "30 dias (recomendado)",
+          "days60": "60 dias",
+          "days90": "90 dias"
+        }
       },
-      "pruneNow": "Limpar Histórico Antigo Agora",
-      "pruningNow": "Limpando histórico antigo...",
-      "pruneSuccess": "{{pings}} pings e {{snapshots}} snapshots limpos com sucesso."
+      "pruneNow": "Limpar histórico antigo",
+      "pruningNow": "Limpando...",
+      "pruneSuccess": "{{pings}} pings e {{snapshots}} snapshots limpos."
     },
     "LanguageSettings": {
       "title": "Idioma",
-      "helperText": "Selecione abaixo o idioma a ser utilizado pela aplicação: "
+      "helperText": "Idioma da interface da aplicação.",
+      "ptDesc": "Português (Brasil)",
+      "enDesc": "English (US)"
     },
     "SystemTraySettings": {
-      "title": "Bandeja Do Sistema",
-      "helperText": "Utilize esta opção para definir o comportamento da aplicação na bandeja do sistema.",
-      "minimizeToSystemTray": "Minimizar para a bandeja do sistema",
-      "minimizeToSystemTrayHelper": "Ao habilitar esta opção, o Fluig Monitor será minimizado para a bandeja do sistema ao ser minimizado, e continuará em execução.",
+      "title": "Bandeja do sistema",
+      "helperText": "Comportamento ao minimizar e notificações da bandeja.",
+      "minimizeToSystemTray": "Minimizar para a bandeja",
+      "minimizeToSystemTrayHelper": "Mantém o Fluig Monitor em execução quando a janela for minimizada.",
       "disableNotification": "Desabilitar notificação",
-      "disableNotificationHelper": "Utilize esta opção para desabilitar a notificação de que o Fluig Monitor ainda está em execução."
+      "disableNotificationHelper": "Não exibe o aviso de que o app continua na bandeja.",
+      "alertsTitle": "Alertas",
+      "alertsHelper": "Aviso sonoro quando um ambiente ficar indisponível.",
+      "enableSoundAlerts": "Alertas sonoros",
+      "enableSoundAlertsHelper": "Toca um sinal sintetizado em falha de conexão ou offline.",
+      "testSound": "Testar som",
+      "testSoundTitle": "Reproduzir o alerta crítico"
     },
     "AboutSection": {
       "headingTitle": "Sobre",
       "title": "Uma ferramenta open-source para monitoramento de ambientes Fluig.",
       "developedBy": "Desenvolvido por ",
+      "license": "Licença GNU GPL v3.0",
+      "platform": "Plataforma",
+      "webview": "Webview",
+      "openRepository": "Repositório",
+      "reportIssue": "Reportar issue",
+      "releaseNotes": "Notas da versão",
+      "runtimeUnavailable": "Não foi possível ler o runtime desta instalação.",
       "disclosure": "O Fluig Monitor é um projeto open-source independente, desenvolvido para fins de pesquisa, estudo e apoio à comunidade técnica, sem qualquer vínculo ou chancela da TOTVS S.A.",
       "usageDisclosure": "O software é fornecido gratuitamente \"no estado em que se encontra\" (as is). Por depender de APIs, versões e configurações customizadas de cada servidor, a compatibilidade pode variar conforme o ambiente.",
       "learnMoreAt": "Saiba mais sobre o projeto no repositório oficial no "
@@ -446,56 +537,75 @@
     "EnvironmentHeader": {
       "pingNow": "Verificar Agora",
       "syncNow": "Sincronizar",
-      "openUrl": "Abrir no Navegador"
+      "openUrl": "Abrir no Navegador",
+      "synced": "{{name}}: dados sincronizados com sucesso",
+      "pingOk": "{{name}}: operacional ({{ms}}ms)",
+      "pingUnavailable": "Indisponível: {{name}} não respondeu ({{detail}})",
+      "pingFailed": "Falha ao testar conexão: {{detail}}",
+      "syncFailed": "Falha na sincronização: {{detail}}",
+      "connectionRefused": "Timeout / conexão recusada",
+      "serverUnavailable": "Servidor indisponível",
+      "unknownError": "Erro desconhecido",
+      "statusUnknown": "Status desconhecido",
+      "fluigVersion": "Fluig v{{version}}"
     },
     "EnvironmentRuntimeStats": {
-      "title": "Estatísticas de Runtime e Threads",
-      "connectedUsers": "Usuários Conectados",
-      "activeThreads": "Threads Ativas",
-      "peakThreads": "Pico de Threads",
-      "daemonThreads": "Threads Daemon",
-      "totalStartedThreads": "Total de Threads Iniciadas",
-      "tmpFolderSize": "Pasta Temporária",
-      "logFolderSize": "Pasta de Logs",
-      "runtimeStart": "Início do Runtime",
-      "threadsEvolutionTitle": "Evolução de Threads e Usuários Conectados"
+      "title": "Runtime e threads",
+      "connectedUsers": "Usuários conectados",
+      "activeThreads": "Threads ativas",
+      "peakThreads": "Pico",
+      "daemonThreads": "Threads daemon",
+      "totalStartedThreads": "Total iniciadas",
+      "tmpFolderSize": "Temporários",
+      "logFolderSize": "Logs",
+      "runtimeStart": "Início do runtime",
+      "threadsEvolutionTitle": "Evolução de threads e usuários"
     },
     "EnvironmentArtifacts": {
-      "title": "Artefatos do Servidor",
-      "appsDir": "Aplicações (Apps)",
-      "coreDir": "Núcleo (Core)",
-      "systemDir": "Sistema (System)",
-      "searchPlaceholder": "Filtrar artefatos por nome...",
+      "title": "Artefatos do servidor",
+      "appsDir": "Apps",
+      "coreDir": "Core",
+      "systemDir": "System",
+      "searchPlaceholder": "Filtrar por nome ou assinatura",
       "artifactName": "Artefato",
-      "artifactDetails": "Assinatura / Detalhes",
-      "totalCount": "Total listado"
+      "artifactDetails": "Assinatura / detalhes",
+      "totalCount": "Total",
+      "unknown": "Desconhecido",
+      "noResults": "Nenhum artefato corresponde ao filtro."
     },
     "EnvironmentServicesHistory": {
-      "title": "Serviços e Fontes de Dados",
-      "overviewTitle": "Visão Geral de Subsistemas & SLA",
-      "successRate": "Taxa de Sucesso",
-      "lastException": "Última Exceção Registrada",
+      "title": "Serviços e fontes de dados",
+      "overviewTitle": "Subsistemas e SLA",
+      "successRate": "Taxa de sucesso",
+      "lastException": "Última exceção registrada",
       "noExceptions": "Sem exceções registradas",
-      "viewErrorDetails": "Ver Erro",
-      "dataSourcesTitle": "DataSources Configurados",
-      "historyTitle": "Histórico Recente de Monitoramento"
+      "viewErrorDetails": "Ver erro",
+      "dataSourcesTitle": "DataSources configurados",
+      "historyTitle": "Histórico recente",
+      "timestamp": "Horário",
+      "fluigDs": "FluigDS (leitura/escrita)",
+      "fluigDsRo": "FluigDSRO (somente leitura)",
+      "close": "Fechar"
     },
     "EnvironmentInsights": {
-      "title": "Diagnóstico e Insights do Ambiente",
-      "allHealthyTitle": "Ambiente Operando Saudavelmente",
-      "allHealthyDesc": "Todas as métricas de memória, disco, licenças, serviços e latência estão dentro dos parâmetros recomendados.",
-      "highMemoryTitle": "Uso Elevado de Memória no Servidor",
-      "highMemoryDesc": "O consumo de memória RAM do servidor ultrapassou 85% da capacidade total.",
-      "lowDiskTitle": "Espaço em Disco Reduzido",
-      "lowDiskDesc": "O espaço livre em disco do servidor está abaixo de 15%.",
-      "largeLogsTitle": "Volume Elevado de Logs / Temporários",
-      "largeLogsDesc": "As pastas de logs ou arquivos temporários do Fluig acumulam mais de 5 GB.",
-      "lowLicensesTitle": "Licenças Próximas do Limite",
-      "lowLicensesDesc": "Restam poucas licenças disponíveis para novos acessos simultâneos.",
-      "failedServicesTitle": "Serviços Críticos com Falha",
-      "failedServicesDesc": "Um ou mais serviços monitorados reportaram falha na última coleta: ",
-      "highLatencyTitle": "Latência de Resposta Elevada",
-      "highLatencyDesc": "O tempo médio de resposta recente está acima de 800ms."
+      "title": "Diagnóstico e insights",
+      "severityHealthy": "Saudável",
+      "severityWarning": "Atenção",
+      "severityCritical": "Crítico",
+      "allHealthyTitle": "Ambiente operando de forma saudável",
+      "allHealthyDesc": "Memória, disco, licenças, serviços e latência estão dentro dos parâmetros recomendados.",
+      "highMemoryTitle": "Uso elevado de memória",
+      "highMemoryDesc": "O consumo de RAM ultrapassou 85% da capacidade total.",
+      "lowDiskTitle": "Espaço em disco reduzido",
+      "lowDiskDesc": "O espaço livre em disco está abaixo de 15%.",
+      "largeLogsTitle": "Volume elevado de logs / temporários",
+      "largeLogsDesc": "Logs ou temporários do Fluig acumulam mais de 5 GB.",
+      "lowLicensesTitle": "Licenças próximas do limite",
+      "lowLicensesDesc": "Restam poucas licenças para novos acessos simultâneos.",
+      "failedServicesTitle": "Serviços críticos com falha",
+      "failedServicesDesc": "Um ou mais serviços reportaram falha na última coleta: ",
+      "highLatencyTitle": "Latência de resposta elevada",
+      "highLatencyDesc": "O tempo médio de resposta recente está acima de 800 ms."
     }
   },
   "classes": {

@@ -137,9 +137,20 @@ export async function deleteEnvironment(id: number): Promise<boolean> {
 export async function toggleEnvironmentFavorite(
   id: number
 ): Promise<{ favorited: boolean; exception: string | null }> {
-  const favorited = await ipcRenderer.invoke('toggleEnvironmentFavorite', id);
+  const result = await ipcRenderer.invoke('toggleEnvironmentFavorite', id);
 
-  return favorited;
+  if (result && typeof result === 'object') {
+    return {
+      favorited: Boolean(result.favorited),
+      exception: result.exception ?? null,
+    };
+  }
+
+  if (typeof result === 'boolean') {
+    return { favorited: result, exception: null };
+  }
+
+  return { favorited: false, exception: 'TOGGLE_FAILED' };
 }
 
 export async function getLastHttpResponseById(

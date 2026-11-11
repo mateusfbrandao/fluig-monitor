@@ -200,10 +200,13 @@ b {
 }
 
 #environment-form-container {
-  max-width: 991px;
+  max-width: 860px;
   width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
 }
 
 #floatingNotificationsContainer {

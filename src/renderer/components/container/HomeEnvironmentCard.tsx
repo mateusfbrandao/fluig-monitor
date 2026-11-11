@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiActivity, FiSettings } from 'react-icons/fi';
 import { ipcRenderer } from 'electron';
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 import { EnvironmentWithRelatedData } from '../../../common/interfaces/EnvironmentControllerInterface';
 import EnvironmentFavoriteButton from '../base/EnvironmentFavoriteButton';
@@ -18,6 +19,7 @@ interface Props {
 }
 
 function HomeEnvironmentCard({ injectedEnvironment }: Props) {
+  const { t } = useTranslation();
   const [environment, setEnvironment] =
     useState<EnvironmentWithRelatedData>(injectedEnvironment);
   const [isPinging, setIsPinging] = useState(false);
@@ -41,7 +43,7 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
       return [];
     }
     return environment.httpResponses.slice().reverse();
-  }, [environment?.httpResponses]);
+  }, [environment]);
 
   const uptimeBlocks = useMemo(() => {
     return chartData.slice(-28);
@@ -80,6 +82,10 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
     return null;
   }
 
+  const releaseMatch = environment.release
+    ? environment.release.match(/\d+(\.\d+)+(-[^\s]+)?/)
+    : null;
+
   return (
     <div className="EnvironmentCard" key={environment.id}>
       <div className="heading">
@@ -97,7 +103,8 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
             type="button"
             onClick={handleQuickPing}
             disabled={isPinging}
-            title="Ping Agora"
+            title={t('views.HomeEnvironmentListView.pingNow')}
+            aria-label={t('views.HomeEnvironmentListView.pingNow')}
           >
             <FiActivity className={isPinging ? 'rotating' : ''} />
           </button>
@@ -107,7 +114,8 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
           />
           <Link
             to={`/environment/${environment.id}/edit`}
-            title="Configurações"
+            title={t('views.HomeEnvironmentListView.openSettings')}
+            aria-label={t('views.HomeEnvironmentListView.openSettings')}
           >
             <FiSettings />
           </Link>
@@ -117,7 +125,7 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
       {uptimeBlocks.length > 0 && (
         <div className="card-uptime-strip">
           <div className="uptime-strip-header">
-            <span>UPTIME RECENTE</span>
+            <span>{t('views.HomeEnvironmentListView.card.uptime')}</span>
             {uptimePercentage !== null && <b>{uptimePercentage}%</b>}
           </div>
           <div className="uptime-bars">
@@ -165,7 +173,7 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
             </AreaChart>
           </ResponsiveContainer>
         ) : (
-          <small style={{ color: 'var(--font-soft)' }}>—</small>
+          <span className="graph-empty">—</span>
         )}
       </div>
 
@@ -173,7 +181,7 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
         <div className="card-metrics">
           {environment.release && (
             <span className="metric-pill">
-              Fluig v{environment.release.match(/\d+(\.\d+)+(-[^\s]+)?/)?.[0] || environment.release}
+              Fluig v{releaseMatch?.[0] || environment.release}
             </span>
           )}
           {latestPing && (
@@ -184,7 +192,7 @@ function HomeEnvironmentCard({ injectedEnvironment }: Props) {
             >
               {latestPing.responseTimeMs > 0
                 ? `${latestPing.responseTimeMs} ms`
-                : 'Offline'}
+                : t('views.HomeEnvironmentListView.status.offline')}
             </span>
           )}
         </div>

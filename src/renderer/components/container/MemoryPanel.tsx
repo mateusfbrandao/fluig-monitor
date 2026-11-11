@@ -71,7 +71,9 @@ export default function MemoryPanel() {
           navigate(`/environment/${environmentId}/detailedMemory`);
         }
       }}
-      aria-label={`${t('components.SystemResources.Memory.title')} - Abrir métricas detalhadas de memória`}
+      aria-label={`${t('components.SystemResources.Memory.title')} - ${t(
+        'components.SystemResources.Memory.openDetailed'
+      )}`}
     >
       <div className="header">
         <div className="header-left">

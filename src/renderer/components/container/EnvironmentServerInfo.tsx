@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiClock, FiCpu, FiDatabase, FiServer } from 'react-icons/fi';
 
 import DynamicImageLoad from '../base/DynamicImageLoad';
 import defaultServerLogo from '../../assets/img/defaultServerLogo.png';
@@ -45,6 +44,30 @@ export default function EnvironmentServerInfo() {
       ? relativeTime(Number(latestStats.systemUptime))
       : null;
 
+  const specs =
+    latestStats && uptime
+      ? [
+          {
+            label: t('components.EnvironmentServerInfo.processor'),
+            value: t('components.EnvironmentServerInfo.cores', {
+              count: latestStats.systemServerCoreCount,
+            }),
+          },
+          {
+            label: t('components.EnvironmentServerInfo.memory'),
+            value: formatBytes(Number(latestStats.systemServerMemorySize)),
+          },
+          {
+            label: t('components.EnvironmentServerInfo.disk'),
+            value: formatBytes(Number(latestStats.systemServerHDSize)),
+          },
+          {
+            label: t('components.EnvironmentServerInfo.activityTime'),
+            value: `${uptime.days}d ${uptime.hours}h ${uptime.minutes}m`,
+          },
+        ]
+      : [];
+
   return (
     <div className="widget-container" id="environment-server-info">
       <h3 className="title">{t('components.EnvironmentServerInfo.title')}</h3>
@@ -54,7 +77,7 @@ export default function EnvironmentServerInfo() {
             <div className="server-identity-banner">
               <DynamicImageLoad
                 imgSrc={`${serverData.baseUrl}/portal/api/servlet/image/1/custom/logo_image.png`}
-                altName="Logo"
+                altName={serverData.name}
                 fallback={defaultServerLogo}
               />
               <div className="server-identity-meta">
@@ -63,58 +86,23 @@ export default function EnvironmentServerInfo() {
               </div>
             </div>
 
-            {uptime !== null && latestStats ? (
-              <div id="server-specs-grid">
-                <div className="specs-item">
-                  <FiCpu />
-                  <div className="spec-description">
-                    <span>
-                      {t('components.EnvironmentServerInfo.processor')}
-                    </span>
-                    <b>{latestStats.systemServerCoreCount} Cores</b>
+            {specs.length > 0 ? (
+              <dl className="server-spec">
+                {specs.map((item) => (
+                  <div className="server-spec-item" key={item.label}>
+                    <dt>{item.label}</dt>
+                    <dd>{item.value}</dd>
                   </div>
-                </div>
-
-                <div className="specs-item">
-                  <FiServer />
-                  <div className="spec-description">
-                    <span>{t('components.EnvironmentServerInfo.memory')}</span>
-                    <b>
-                      {formatBytes(Number(latestStats.systemServerMemorySize))}
-                    </b>
-                  </div>
-                </div>
-
-                <div className="specs-item">
-                  <FiDatabase />
-                  <div className="spec-description">
-                    <span>{t('components.EnvironmentServerInfo.disk')}</span>
-                    <b>{formatBytes(Number(latestStats.systemServerHDSize))}</b>
-                  </div>
-                </div>
-
-                <div className="specs-item">
-                  <FiClock />
-                  <div className="spec-description">
-                    <span>
-                      {t('components.EnvironmentServerInfo.activityTime')}
-                    </span>
-                    <b>
-                      {uptime.days}d {uptime.hours}h {uptime.minutes}m
-                    </b>
-                  </div>
-                </div>
-              </div>
+                ))}
+              </dl>
             ) : (
-              <div className="text-center">
-                <span className="text-soft">
-                  {t('components.EnvironmentServerInfo.noDataDueToVersion')}
-                </span>
-              </div>
+              <p className="server-empty">
+                {t('components.EnvironmentServerInfo.noDataDueToVersion')}
+              </p>
             )}
           </>
         ) : (
-          <span>{t('components.global.noData')}</span>
+          <p className="server-empty">{t('components.global.noData')}</p>
         )}
       </div>
     </div>

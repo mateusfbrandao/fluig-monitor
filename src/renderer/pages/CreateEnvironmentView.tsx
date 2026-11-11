@@ -7,7 +7,10 @@ import {
   FiAlertTriangle,
   FiArrowLeft,
   FiCheck,
+  FiClock,
+  FiKey,
   FiRefreshCw,
+  FiServer,
   FiWifi,
 } from 'react-icons/fi';
 import log from 'electron-log';
@@ -79,16 +82,17 @@ export default function CreateEnvironmentView(): JSX.Element {
         </span>
       );
 
-      const results = (await ipcRenderer.invoke(
-        'validateOauthPermission',
-        {
-          consumerKey,
-          consumerSecret,
-          accessToken,
-          tokenSecret,
-        },
-        domainUrl
-      )) || [];
+      const results =
+        (await ipcRenderer.invoke(
+          'validateOauthPermission',
+          {
+            consumerKey,
+            consumerSecret,
+            accessToken,
+            tokenSecret,
+          },
+          domainUrl
+        )) || [];
 
       if (
         Array.isArray(results) &&
@@ -167,16 +171,17 @@ export default function CreateEnvironmentView(): JSX.Element {
       setActionButtonsDisabled(true);
       setButtonIsLoading(true);
 
-      const permissionsResults = (await ipcRenderer.invoke(
-        'validateOauthPermission',
-        {
-          consumerKey,
-          consumerSecret,
-          accessToken,
-          tokenSecret,
-        },
-        domainUrl
-      )) || [];
+      const permissionsResults =
+        (await ipcRenderer.invoke(
+          'validateOauthPermission',
+          {
+            consumerKey,
+            consumerSecret,
+            accessToken,
+            tokenSecret,
+          },
+          domainUrl
+        )) || [];
 
       const isAllPermissionsOk =
         Array.isArray(permissionsResults) &&
@@ -198,7 +203,9 @@ export default function CreateEnvironmentView(): JSX.Element {
         );
 
         if (releaseResponse && releaseResponse.content) {
-          const verMatch = releaseResponse.content.match(/\d+(\.\d+)+(-[^\s]+)?/);
+          const verMatch = releaseResponse.content.match(
+            /\d+(\.\d+)+(-[^\s]+)?/
+          );
           if (verMatch) {
             fluigRelease = verMatch[0];
           } else {
@@ -343,161 +350,178 @@ export default function CreateEnvironmentView(): JSX.Element {
   return (
     <DefaultMotionDiv id="environment-form-container">
       <Link to="/" className="top-return-button">
-        <FiArrowLeft />
+        <FiArrowLeft aria-hidden="true" />
         {t('views.CreateEnvironmentView.back')}
       </Link>
-      <h1>{t('views.CreateEnvironmentView.form.title')}</h1>
 
-      <form action="#" onSubmit={handleSubmit}>
-        <h3>{t('views.CreateEnvironmentView.form.environmentDataSection')}</h3>
+      <header className="env-form-header">
+        <h2>{t('views.CreateEnvironmentView.form.title')}</h2>
+        <p className="env-form-subtitle">
+          {t('views.CreateEnvironmentView.form.subtitle')}
+        </p>
+      </header>
 
-        <div className="form-group">
-          <label htmlFor="environmentName">
-            {t('views.CreateEnvironmentView.form.environmentName.label')}
-          </label>
-          <input
-            type="text"
-            name="environmentName"
-            id="environmentName"
-            placeholder={t(
-              'views.CreateEnvironmentView.form.environmentName.placeholder'
-            )}
-            value={name}
-            onChange={(event) => {
-              setName(event.target.value);
-            }}
-          />
-        </div>
+      <form className="env-settings-form" action="#" onSubmit={handleSubmit}>
+        <section className="env-form-plate">
+          <h3 className="icon-title">
+            <span className="icon-dot neutral-variant">
+              <FiServer aria-hidden="true" />
+            </span>
+            {t('views.CreateEnvironmentView.form.environmentDataSection')}
+          </h3>
 
-        <div className="form-row">
           <div className="form-group">
-            <label htmlFor="domainUrl">
-              {t('views.CreateEnvironmentView.form.domainUrl.label')}
+            <label htmlFor="environmentName">
+              {t('views.CreateEnvironmentView.form.environmentName.label')}
             </label>
             <input
               type="text"
-              name="domainUrl"
-              id="domainUrl"
+              name="environmentName"
+              id="environmentName"
               placeholder={t(
-                'views.CreateEnvironmentView.form.domainUrl.placeholder'
+                'views.CreateEnvironmentView.form.environmentName.placeholder'
               )}
-              value={domainUrl}
+              value={name}
               onChange={(event) => {
-                setDomainUrl(event.target.value);
+                setName(event.target.value);
               }}
-              onBlur={() => parseDomainUrl()}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="environmentKind">
-              {t('views.CreateEnvironmentView.form.environmentKind.label')}
-            </label>
-            <select
-              name="environmentKind"
-              id="environmentKind"
-              value={kind}
-              onChange={(event) => {
-                setKind(event.target.value);
-              }}
-            >
-              <option value="PROD">
-                {t(
-                  'views.CreateEnvironmentView.form.environmentKind.options.prod'
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="domainUrl">
+                {t('views.CreateEnvironmentView.form.domainUrl.label')}
+              </label>
+              <input
+                type="text"
+                name="domainUrl"
+                id="domainUrl"
+                placeholder={t(
+                  'views.CreateEnvironmentView.form.domainUrl.placeholder'
                 )}
-              </option>
-              <option value="HML">
-                {t(
-                  'views.CreateEnvironmentView.form.environmentKind.options.hml'
+                value={domainUrl}
+                onChange={(event) => {
+                  setDomainUrl(event.target.value);
+                }}
+                onBlur={() => parseDomainUrl()}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="environmentKind">
+                {t('views.CreateEnvironmentView.form.environmentKind.label')}
+              </label>
+              <select
+                name="environmentKind"
+                id="environmentKind"
+                value={kind}
+                onChange={(event) => {
+                  setKind(event.target.value);
+                }}
+              >
+                <option value="PROD">
+                  {t(
+                    'views.CreateEnvironmentView.form.environmentKind.options.prod'
+                  )}
+                </option>
+                <option value="HML">
+                  {t(
+                    'views.CreateEnvironmentView.form.environmentKind.options.hml'
+                  )}
+                </option>
+                <option value="DEV">
+                  {t(
+                    'views.CreateEnvironmentView.form.environmentKind.options.dev'
+                  )}
+                </option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section className="env-form-plate">
+          <h3 className="icon-title">
+            <span className="icon-dot neutral-variant">
+              <FiKey aria-hidden="true" />
+            </span>
+            {t('views.CreateEnvironmentView.form.environmentAuthSection')}
+          </h3>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="consumerKey">
+                {t('views.CreateEnvironmentView.form.consumerKey.label')}
+              </label>
+              <input
+                type="password"
+                name="consumerKey"
+                id="consumerKey"
+                placeholder={t(
+                  'views.CreateEnvironmentView.form.consumerKey.placeholder'
                 )}
-              </option>
-              <option value="DEV">
-                {t(
-                  'views.CreateEnvironmentView.form.environmentKind.options.dev'
+                value={consumerKey}
+                onChange={(event) => {
+                  setConsumerKey(event.target.value);
+                }}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="consumerSecret">
+                {t('views.CreateEnvironmentView.form.consumerSecret.label')}
+              </label>
+              <input
+                type="password"
+                name="consumerSecret"
+                id="consumerSecret"
+                placeholder={t(
+                  'views.CreateEnvironmentView.form.consumerSecret.placeholder'
                 )}
-              </option>
-            </select>
+                value={consumerSecret}
+                onChange={(event) => {
+                  setConsumerSecret(event.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
 
-        <h3 className="mt-1">
-          {t('views.CreateEnvironmentView.form.environmentAuthSection')}
-        </h3>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="consumerKey">
-              {t('views.CreateEnvironmentView.form.consumerKey.label')}
-            </label>
-            <input
-              type="password"
-              name="consumerKey"
-              id="consumerKey"
-              placeholder={t(
-                'views.CreateEnvironmentView.form.consumerKey.placeholder'
-              )}
-              value={consumerKey}
-              onChange={(event) => {
-                setConsumerKey(event.target.value);
-              }}
-            />
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="accessToken">
+                {t('views.CreateEnvironmentView.form.accessToken.label')}
+              </label>
+              <input
+                type="password"
+                name="accessToken"
+                id="accessToken"
+                placeholder={t(
+                  'views.CreateEnvironmentView.form.accessToken.placeholder'
+                )}
+                value={accessToken}
+                onChange={(event) => {
+                  setAccessToken(event.target.value);
+                }}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="tokenSecret">
+                {t('views.CreateEnvironmentView.form.tokenSecret.label')}
+              </label>
+              <input
+                type="password"
+                name="tokenSecret"
+                id="tokenSecret"
+                placeholder={t(
+                  'views.CreateEnvironmentView.form.tokenSecret.placeholder'
+                )}
+                value={tokenSecret}
+                onChange={(event) => {
+                  setTokenSecret(event.target.value);
+                }}
+              />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="consumerSecret">
-              {t('views.CreateEnvironmentView.form.consumerSecret.label')}
-            </label>
-            <input
-              type="password"
-              name="consumerSecret"
-              id="consumerSecret"
-              placeholder={t(
-                'views.CreateEnvironmentView.form.consumerSecret.placeholder'
-              )}
-              value={consumerSecret}
-              onChange={(event) => {
-                setConsumerSecret(event.target.value);
-              }}
-            />
-          </div>
-        </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="accessToken">
-              {t('views.CreateEnvironmentView.form.accessToken.label')}
-            </label>
-            <input
-              type="password"
-              name="accessToken"
-              id="accessToken"
-              placeholder={t(
-                'views.CreateEnvironmentView.form.accessToken.placeholder'
-              )}
-              value={accessToken}
-              onChange={(event) => {
-                setAccessToken(event.target.value);
-              }}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="tokenSecret">
-              {t('views.CreateEnvironmentView.form.tokenSecret.label')}
-            </label>
-            <input
-              type="password"
-              name="tokenSecret"
-              id="tokenSecret"
-              placeholder={t(
-                'views.CreateEnvironmentView.form.tokenSecret.placeholder'
-              )}
-              value={tokenSecret}
-              onChange={(event) => {
-                setTokenSecret(event.target.value);
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="form-row">
           <div className="form-group inline">
             <input
               type="checkbox"
@@ -512,127 +536,146 @@ export default function CreateEnvironmentView(): JSX.Element {
               {t('views.CreateEnvironmentView.form.useEncryption')}
             </label>
           </div>
-        </div>
 
-        <div className="button-action-row mt-1 mb-2">
+          <div className="env-form-test-row">
+            <button
+              type="button"
+              className="env-form-action-btn"
+              onClick={validateOauthPermission}
+            >
+              <FiWifi aria-hidden="true" />
+              <span>
+                {t('views.CreateEnvironmentView.form.testConnection')}
+              </span>
+            </button>
+            {testMessage}
+          </div>
+        </section>
+
+        <section className="env-form-plate">
+          <h3 className="icon-title">
+            <span className="icon-dot neutral-variant">
+              <FiClock aria-hidden="true" />
+            </span>
+            {t('views.CreateEnvironmentView.form.scheduleSection')}
+          </h3>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="pingUpdateFrequency">
+                {t('views.CreateEnvironmentView.form.serverVerification.title')}
+              </label>
+              <select
+                name="pingUpdateFrequency"
+                id="pingUpdateFrequency"
+                value={pingFrequency}
+                onChange={(event) => {
+                  setPingFrequency(event.target.value);
+                }}
+              >
+                <option value="15s">
+                  {t(
+                    'views.CreateEnvironmentView.form.serverVerification.options.15s'
+                  )}
+                </option>
+                <option value="30s">
+                  {t(
+                    'views.CreateEnvironmentView.form.serverVerification.options.30s'
+                  )}
+                </option>
+                <option value="1m">
+                  {t(
+                    'views.CreateEnvironmentView.form.serverVerification.options.1m'
+                  )}
+                </option>
+                <option value="2m">
+                  {t(
+                    'views.CreateEnvironmentView.form.serverVerification.options.2m'
+                  )}
+                </option>
+              </select>
+              <small className="help-block">
+                {t(
+                  'views.CreateEnvironmentView.form.serverVerification.helper'
+                )}
+              </small>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="scrapeUpdateFrequency">
+                {t('views.CreateEnvironmentView.form.dataCollection.title')}
+              </label>
+              <select
+                name="scrapeUpdateFrequency"
+                id="scrapeUpdateFrequency"
+                value={scrapeFrequency}
+                onChange={(event) => {
+                  setScrapeFrequency(event.target.value);
+                }}
+              >
+                <option value="15m">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.15m'
+                  )}
+                </option>
+                <option value="30m">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.30m'
+                  )}
+                </option>
+                <option value="1h">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.1h'
+                  )}
+                </option>
+                <option value="2h">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.2h'
+                  )}
+                </option>
+                <option value="3h">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.3h'
+                  )}
+                </option>
+                <option value="6h">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.6h'
+                  )}
+                </option>
+                <option value="12h">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.12h'
+                  )}
+                </option>
+                <option value="24h">
+                  {t(
+                    'views.CreateEnvironmentView.form.dataCollection.options.24h'
+                  )}
+                </option>
+              </select>
+              <small className="help-block">
+                {t('views.CreateEnvironmentView.form.dataCollection.helper')}
+              </small>
+            </div>
+          </div>
+        </section>
+
+        <section className="env-form-actions">
           <button
-            type="button"
-            className="button is-secondary"
-            onClick={validateOauthPermission}
-          >
-            <FiWifi /> {t('views.CreateEnvironmentView.form.testConnection')}
-          </button>
-
-          <span>{testMessage}</span>
-        </div>
-
-        <h3>
-          {t('views.CreateEnvironmentView.form.serverVerification.title')}
-        </h3>
-
-        <div className="form-group">
-          <label htmlFor="pingUpdateFrequency">
-            {t('views.CreateEnvironmentView.form.serverVerification.label')}
-          </label>
-          <select
-            name="pingUpdateFrequency"
-            id="pingUpdateFrequency"
-            value={pingFrequency}
-            onChange={(event) => {
-              setPingFrequency(event.target.value);
-            }}
-          >
-            <option value="15s">
-              {t(
-                'views.CreateEnvironmentView.form.serverVerification.options.15s'
-              )}
-            </option>
-            <option value="30s">
-              {t(
-                'views.CreateEnvironmentView.form.serverVerification.options.30s'
-              )}
-            </option>
-            <option value="1m">
-              {t(
-                'views.CreateEnvironmentView.form.serverVerification.options.1m'
-              )}
-            </option>
-            <option value="2m">
-              {t(
-                'views.CreateEnvironmentView.form.serverVerification.options.2m'
-              )}
-            </option>
-          </select>
-          <small className="help-block">
-            {t('views.CreateEnvironmentView.form.serverVerification.helper')}
-          </small>
-        </div>
-
-        <h3 className="mt-1">
-          {t('views.CreateEnvironmentView.form.dataCollection.title')}
-        </h3>
-
-        <div className="form-group">
-          <label htmlFor="scrapeUpdateFrequency">
-            {t('views.CreateEnvironmentView.form.dataCollection.label')}
-          </label>
-          <select
-            name="scrapeUpdateFrequency"
-            id="scrapeUpdateFrequency"
-            value={scrapeFrequency}
-            onChange={(event) => {
-              setScrapeFrequency(event.target.value);
-            }}
-          >
-            <option value="15m">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.15m')}
-            </option>
-            <option value="30m">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.30m')}
-            </option>
-            <option value="1h">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.1h')}
-            </option>
-            <option value="2h">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.2h')}
-            </option>
-            <option value="3h">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.3h')}
-            </option>
-            <option value="6h">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.6h')}
-            </option>
-            <option value="12h">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.12h')}
-            </option>
-            <option value="24h">
-              {t('views.CreateEnvironmentView.form.dataCollection.options.24h')}
-            </option>
-          </select>
-          <small className="help-block">
-            {t('views.CreateEnvironmentView.form.dataCollection.helper')}
-          </small>
-        </div>
-
-        <div className="button-action-row mt-1 mb-2">
-          <button
-            className="button is-default"
+            className="env-form-action-btn is-primary"
             type="submit"
             disabled={actionButtonsDisabled}
           >
             {buttonIsLoading ? (
-              <>
-                <FiRefreshCw className="rotating" />
-              </>
+              <FiRefreshCw className="rotating" aria-hidden="true" />
             ) : (
-              <>
-                <FiCheck /> {t('views.CreateEnvironmentView.form.buttonSubmit')}
-              </>
+              <FiCheck aria-hidden="true" />
             )}
+            <span>{t('views.CreateEnvironmentView.form.buttonSubmit')}</span>
           </button>
-
           {validationMessage}
-        </div>
+        </section>
       </form>
     </DefaultMotionDiv>
   );

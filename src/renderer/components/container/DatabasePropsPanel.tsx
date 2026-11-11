@@ -47,11 +47,12 @@ export default function DatabasePropsPanel() {
   useEffect(() => {
     if (dbProps && dbProps.dbName) {
       const { dbName } = dbProps;
-      if (dbName.toLocaleLowerCase().indexOf('mysql') > -1) {
+      const normalized = dbName.toLocaleLowerCase();
+      if (normalized.includes('mysql')) {
         setDbIllustration(mySqlLogo);
-      } else if (dbName.toLocaleLowerCase().indexOf('sql server') > -1) {
+      } else if (normalized.includes('sql server')) {
         setDbIllustration(sqlServerLogo);
-      } else if (dbName.toLocaleLowerCase().indexOf('oracle') > -1) {
+      } else if (normalized.includes('oracle')) {
         setDbIllustration(oracleLogo);
       } else {
         setDbIllustration(defaultDatabaseLogo);
@@ -59,13 +60,33 @@ export default function DatabasePropsPanel() {
     }
   }, [dbProps]);
 
+  const propsList = dbProps
+    ? [
+        {
+          label: t('components.SystemResources.DatabasePropsPanel.dbName'),
+          value: dbProps.dbName,
+        },
+        {
+          label: t('components.SystemResources.DatabasePropsPanel.dbVersion'),
+          value: dbProps.dbVersion,
+        },
+        {
+          label: t(
+            'components.SystemResources.DatabasePropsPanel.dbDriverName'
+          ),
+          value: dbProps.dbDriverName,
+        },
+        {
+          label: t(
+            'components.SystemResources.DatabasePropsPanel.dbDriverVersion'
+          ),
+          value: dbProps.dbDriverVersion,
+        },
+      ]
+    : [];
+
   return (
-    <div
-      className="widget-container"
-      style={{
-        maxWidth: '22rem',
-      }}
-    >
+    <div className="widget-container database-props-panel">
       <h3 className="title">
         {t('components.SystemResources.DatabasePropsPanel.title')}
       </h3>
@@ -74,37 +95,17 @@ export default function DatabasePropsPanel() {
           <p>{t('components.global.noData')}</p>
         ) : (
           <>
-            <img
-              src={dbIllustration}
-              style={{
-                objectFit: 'contain',
-                maxHeight: '150px',
-                width: '100%',
-              }}
-              alt="Server Logo"
-            />
-            <div>
-              <p className="font-soft mt-2">
-                {t('components.SystemResources.DatabasePropsPanel.dbName')}
-              </p>
-              <h4>{dbProps.dbName}</h4>
-              <p className="font-soft mt-1">
-                {t('components.SystemResources.DatabasePropsPanel.dbVersion')}
-              </p>
-              <h4>{dbProps.dbVersion}</h4>
-              <p className="font-soft mt-1">
-                {t(
-                  'components.SystemResources.DatabasePropsPanel.dbDriverName'
-                )}
-              </p>
-              <h4>{dbProps.dbDriverName}</h4>
-              <p className="font-soft mt-1">
-                {t(
-                  'components.SystemResources.DatabasePropsPanel.dbDriverVersion'
-                )}
-              </p>
-              <h4 style={{ overflow: 'auto' }}>{dbProps.dbDriverVersion}</h4>
+            <div className="db-props-brand">
+              <img src={dbIllustration} alt="" />
             </div>
+            <dl className="db-props-spec">
+              {propsList.map((item) => (
+                <div className="db-props-item" key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
             <div className="footer">
               <TimeIndicator date={dbProps.httpResponse.timestamp} />
             </div>

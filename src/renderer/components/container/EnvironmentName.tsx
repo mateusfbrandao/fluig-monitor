@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiActivity, FiExternalLink, FiRefreshCw } from 'react-icons/fi';
@@ -11,6 +11,9 @@ import {
   getEnvironmentById,
   openExternalUrl,
 } from '../../ipc/environmentsIpcHandler';
+import { EnvironmentWithRelatedData } from '../../../common/interfaces/EnvironmentControllerInterface';
+import EnvironmentFavoriteButton from '../base/EnvironmentFavoriteButton';
+import SmallTag from '../base/SmallTag';
 
 /**
  * Self loading environment name + version component with quick action buttons
@@ -19,9 +22,8 @@ import {
 export default function EnvironmentName() {
   const { t } = useTranslation();
   const { createShortNotification } = useNotifications();
-  const [environmentName, setEnvironmentName] = useState('');
-  const [release, setEnvironmentRelease] = useState('');
-  const [baseUrl, setBaseUrl] = useState('');
+  const [environment, setEnvironment] =
+    useState<EnvironmentWithRelatedData | null>(null);
   const [isPinging, setIsPinging] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -29,32 +31,59 @@ export default function EnvironmentName() {
   const environmentId = location.pathname.split('/')[2];
 
   useEffect(() => {
-    async function loadEnvironmentName() {
-      const properties = await getEnvironmentById(Number(environmentId));
+    let active = true;
 
-      if (properties) {
-        setEnvironmentName(properties.name);
-        setEnvironmentRelease(properties.release);
-        setBaseUrl(properties.baseUrl);
+    async function loadEnvironment() {
+      const properties = await getEnvironmentById(Number(environmentId), true);
+      if (active && properties) {
+        setEnvironment(properties);
       }
     }
 
-    ipcRenderer.on(`environmentDataUpdated_${environmentId}`, () => {
-      loadEnvironmentName();
-    });
+    const onDataUpdated = () => {
+      loadEnvironment();
+    };
 
-    loadEnvironmentName();
+    ipcRenderer.on(`environmentDataUpdated_${environmentId}`, onDataUpdated);
+    ipcRenderer.on(`serverPinged_${environmentId}`, onDataUpdated);
+
+    loadEnvironment();
 
     return () => {
+      active = false;
       ipcRenderer.removeAllListeners(`environmentDataUpdated_${environmentId}`);
-      setEnvironmentName('');
-      setEnvironmentRelease('');
-      setBaseUrl('');
+      ipcRenderer.removeAllListeners(`serverPinged_${environmentId}`);
+      setEnvironment(null);
     };
   }, [environmentId]);
 
+  const latestPing = useMemo(() => {
+    if (!environment?.httpResponses?.length) return null;
+    return environment.httpResponses[0];
+  }, [environment]);
+
+  let statusClass: 'online' | 'offline' | 'unknown' = 'unknown';
+  if (latestPing) {
+    statusClass =
+      latestPing.responseTimeMs > 0 && latestPing.statusCode === 200
+        ? 'online'
+        : 'offline';
+  }
+
+  let statusLabel = t('components.EnvironmentHeader.statusUnknown');
+  if (statusClass === 'online') {
+    statusLabel = t('components.EnvironmentStatusCard.operational');
+  } else if (statusClass === 'offline') {
+    statusLabel = t('components.EnvironmentStatusCard.unavailable');
+  }
+
+  const releaseVersion =
+    environment?.release?.match(/\d+(\.\d+)+(-[^\s]+)?/)?.[0] ||
+    environment?.release ||
+    '';
+
   async function handlePingNow() {
-    if (isPinging) return;
+    if (isPinging || !environment) return;
     setIsPinging(true);
     try {
       const res = await forceEnvironmentPing(Number(environmentId));
@@ -64,7 +93,12 @@ export default function EnvironmentName() {
           {
             id: Date.now(),
             type: 'danger',
-            message: `${t('components.EnvironmentStatusCard.unavailable', 'Indisponível')}: ${environmentName} não respondeu (${res.statusMessage || 'Timeout / Conexão recusada'})`,
+            message: t('components.EnvironmentHeader.pingUnavailable', {
+              name: environment.name,
+              detail:
+                res.statusMessage ||
+                t('components.EnvironmentHeader.connectionRefused'),
+            }),
           },
           7000
         );
@@ -73,17 +107,24 @@ export default function EnvironmentName() {
           {
             id: Date.now(),
             type: 'success',
-            message: `${environmentName}: ${t('components.EnvironmentStatusCard.operational', 'Operacional')} (${res.responseTimeMs}ms)`,
+            message: t('components.EnvironmentHeader.pingOk', {
+              name: environment.name,
+              ms: res.responseTimeMs,
+            }),
           },
           4000
         );
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '';
       createShortNotification(
         {
           id: Date.now(),
           type: 'danger',
-          message: `Falha ao testar conexão: ${err?.message || 'Servidor indisponível'}`,
+          message: t('components.EnvironmentHeader.pingFailed', {
+            detail:
+              message || t('components.EnvironmentHeader.serverUnavailable'),
+          }),
         },
         7000
       );
@@ -93,7 +134,7 @@ export default function EnvironmentName() {
   }
 
   async function handleSyncNow() {
-    if (isSyncing) return;
+    if (isSyncing || !environment) return;
     setIsSyncing(true);
     try {
       await forceEnvironmentSync(Number(environmentId));
@@ -101,16 +142,21 @@ export default function EnvironmentName() {
         {
           id: Date.now(),
           type: 'success',
-          message: `${environmentName}: ${t('components.EnvironmentHeader.synced', 'Dados sincronizados com sucesso')}`,
+          message: t('components.EnvironmentHeader.synced', {
+            name: environment.name,
+          }),
         },
         4000
       );
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '';
       createShortNotification(
         {
           id: Date.now(),
           type: 'danger',
-          message: `Falha na sincronização: ${err?.message || 'Erro desconhecido'}`,
+          message: t('components.EnvironmentHeader.syncFailed', {
+            detail: message || t('components.EnvironmentHeader.unknownError'),
+          }),
         },
         7000
       );
@@ -119,22 +165,64 @@ export default function EnvironmentName() {
     }
   }
 
-  const releaseVersion = release?.match(/\d+(\.\d+)+(-[^\s]+)?/)?.[0] || release;
+  if (!environment) {
+    return (
+      <div className="environment-header-bar is-loading">
+        <div className="env-heading">
+          <div className="env-title-row">
+            <span className="env-status-dot unknown" aria-hidden="true" />
+            <h2 className="env-title">…</h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="environment-header-bar">
-      <h2 className="title">
-        {environmentName} {releaseVersion ? <span className="pill">Fluig v{releaseVersion}</span> : null}
-      </h2>
+      <div className="env-heading">
+        <div className="env-title-row">
+          <span
+            className={`env-status-dot ${statusClass}`}
+            title={statusLabel}
+            aria-label={statusLabel}
+          />
+          <h2 className="env-title">{environment.name}</h2>
+          {environment.kind ? <SmallTag kind={environment.kind} /> : null}
+          {releaseVersion ? (
+            <span className="env-version-chip">
+              {t('components.EnvironmentHeader.fluigVersion', {
+                version: releaseVersion,
+              })}
+            </span>
+          ) : null}
+          {latestPing && latestPing.responseTimeMs > 0 ? (
+            <span className="env-latency-chip">
+              {latestPing.responseTimeMs} ms
+            </span>
+          ) : null}
+        </div>
+        {environment.baseUrl ? (
+          <p className="env-subtitle">{environment.baseUrl}</p>
+        ) : null}
+      </div>
+
       <div className="header-actions">
+        <EnvironmentFavoriteButton
+          environmentId={environment.id}
+          isFavorite={Boolean(environment.isFavorite)}
+        />
         <button
           type="button"
           className="action-btn"
           onClick={handlePingNow}
           disabled={isPinging}
         >
-          <FiActivity />
-          <span>{t('components.EnvironmentHeader.pingNow', 'Ping')}</span>
+          <FiActivity
+            className={isPinging ? 'rotating' : ''}
+            aria-hidden="true"
+          />
+          <span>{t('components.EnvironmentHeader.pingNow')}</span>
         </button>
         <button
           type="button"
@@ -142,19 +230,22 @@ export default function EnvironmentName() {
           onClick={handleSyncNow}
           disabled={isSyncing}
         >
-          <FiRefreshCw />
-          <span>{t('components.EnvironmentHeader.syncNow', 'Sync')}</span>
+          <FiRefreshCw
+            className={isSyncing ? 'rotating' : ''}
+            aria-hidden="true"
+          />
+          <span>{t('components.EnvironmentHeader.syncNow')}</span>
         </button>
-        {baseUrl && (
+        {environment.baseUrl ? (
           <button
             type="button"
-            className="action-btn"
-            onClick={() => openExternalUrl(baseUrl)}
+            className="action-btn is-primary"
+            onClick={() => openExternalUrl(environment.baseUrl)}
           >
-            <FiExternalLink />
-            <span>{t('components.EnvironmentHeader.openUrl', 'Open')}</span>
+            <FiExternalLink aria-hidden="true" />
+            <span>{t('components.EnvironmentHeader.openUrl')}</span>
           </button>
-        )}
+        ) : null}
       </div>
     </div>
   );

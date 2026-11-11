@@ -79,19 +79,24 @@ export default function EnvironmentView(): JSX.Element {
       <div className="environment-data-container">
         <header className="environment-top-shell">
           <EnvironmentName />
-          <nav className="environment-tabs-nav">
-            {submenuItems.map((item) => (
-              <Link
-                to={item.target}
-                key={item.target}
-                className={`env-tab-link ${
-                  activeSection === item.target ? 'active' : ''
-                }`}
-              >
-                {item.icon}
-                <span className="item-text">{item.text}</span>
-              </Link>
-            ))}
+          <nav
+            className="environment-tabs-nav"
+            aria-label={t('views.EnvironmentDataContainer.tabsNav')}
+          >
+            {submenuItems.map((item) => {
+              const isActive = activeSection === item.target;
+              return (
+                <Link
+                  to={item.target}
+                  key={item.target}
+                  className={`env-tab-link${isActive ? ' active' : ''}`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {item.icon}
+                  <span className="item-text">{item.text}</span>
+                </Link>
+              );
+            })}
           </nav>
         </header>
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ipcRenderer } from 'electron';
+import { FiAlertTriangle, FiX } from 'react-icons/fi';
 
 import Box from '../base/Box';
 import DefaultMotionDiv from '../base/DefaultMotionDiv';
@@ -108,7 +109,6 @@ function EnvironmentServicesContainer() {
 
   const latestMonitor = monitorHistory[0];
 
-  // Parse rawDetails (v2 API) if available
   const v2Map: Record<
     string,
     {
@@ -164,7 +164,6 @@ function EnvironmentServicesContainer() {
     <DefaultMotionDiv id="environment-services-container">
       <h3>{t('components.EnvironmentServicesHistory.title')}</h3>
 
-      {/* Visão Geral dos Subsistemas / Monitores v2 */}
       {latestMonitor && (
         <div className="services-section">
           <h4 className="section-title">
@@ -197,7 +196,6 @@ function EnvironmentServicesContainer() {
                       </span>
                     </div>
 
-                    {/* Taxa de Sucesso (SLA) se presente */}
                     {typeof srv.sucessRate === 'number' && (
                       <div className="service-sla-wrapper">
                         <div className="sla-header">
@@ -227,7 +225,6 @@ function EnvironmentServicesContainer() {
                     )}
                   </div>
 
-                  {/* Exceção / Erro detalhado */}
                   {srv.lastException ? (
                     <div className="service-error-action">
                       <button
@@ -240,7 +237,7 @@ function EnvironmentServicesContainer() {
                           })
                         }
                       >
-                        ⚠️{' '}
+                        <FiAlertTriangle aria-hidden="true" />
                         {t(
                           'components.EnvironmentServicesHistory.viewErrorDetails'
                         )}
@@ -254,26 +251,22 @@ function EnvironmentServicesContainer() {
         </div>
       )}
 
-      {/* Modal de Detalhes da Exceção */}
       {selectedException && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="service-modal-backdrop"
-        >
+        <div role="dialog" aria-modal="true" className="service-modal-backdrop">
           <div className="service-modal-card">
             <div className="service-modal-header">
               <h4 className="modal-title">
-                ⚠️ {selectedException.serviceName} —{' '}
+                <FiAlertTriangle aria-hidden="true" />
+                {selectedException.serviceName} —{' '}
                 {t('components.EnvironmentServicesHistory.lastException')}
               </h4>
               <button
                 type="button"
                 className="modal-close-btn"
                 onClick={() => setSelectedException(null)}
-                aria-label="Fechar"
+                aria-label={t('components.EnvironmentServicesHistory.close')}
               >
-                ✕
+                <FiX aria-hidden="true" />
               </button>
             </div>
             <pre className="service-modal-pre">
@@ -285,14 +278,13 @@ function EnvironmentServicesContainer() {
                 className="btn-close"
                 onClick={() => setSelectedException(null)}
               >
-                Fechar
+                {t('components.EnvironmentServicesHistory.close')}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* DataSources */}
       {(fluigDsEntries.length > 0 || fluigDsRoEntries.length > 0) && (
         <div className="services-section">
           <h4 className="section-title">
@@ -301,13 +293,15 @@ function EnvironmentServicesContainer() {
           <div className="stats-grid-2">
             {fluigDsEntries.length > 0 && (
               <div className="data-table-card">
-                <h4 style={{ marginBottom: '0.5rem' }}>FluigDS (Read/Write)</h4>
+                <h4 className="datasource-title">
+                  {t('components.EnvironmentServicesHistory.fluigDs')}
+                </h4>
                 <table>
                   <tbody>
                     {fluigDsEntries.map(([key, val]) => (
                       <tr key={key}>
                         <td>{key}</td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace' }}>{val}</td>
+                        <td className="mono-cell">{val}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -316,13 +310,15 @@ function EnvironmentServicesContainer() {
             )}
             {fluigDsRoEntries.length > 0 && (
               <div className="data-table-card">
-                <h4 style={{ marginBottom: '0.5rem' }}>FluigDSRO (ReadOnly)</h4>
+                <h4 className="datasource-title">
+                  {t('components.EnvironmentServicesHistory.fluigDsRo')}
+                </h4>
                 <table>
                   <tbody>
                     {fluigDsRoEntries.map(([key, val]) => (
                       <tr key={key}>
                         <td>{key}</td>
-                        <td style={{ fontFamily: 'JetBrains Mono, monospace' }}>{val}</td>
+                        <td className="mono-cell">{val}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -333,17 +329,18 @@ function EnvironmentServicesContainer() {
         </div>
       )}
 
-      {/* Tabela de Histórico */}
       {monitorHistory.length > 0 && (
         <div className="data-table-card">
-          <h4 style={{ marginBottom: '1rem' }}>
+          <h4 className="history-title">
             {t('components.EnvironmentServicesHistory.historyTitle')}
           </h4>
           <div className="history-table-container">
             <table>
               <thead>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>
+                    {t('components.EnvironmentServicesHistory.timestamp')}
+                  </th>
                   {MONITOR_KEYS.map((key) => (
                     <th key={key}>{getServiceName(key)}</th>
                   ))}
@@ -352,17 +349,20 @@ function EnvironmentServicesContainer() {
               <tbody>
                 {monitorHistory.map((row) => (
                   <tr key={row.id}>
-                    <td>
-                      {formatDateTimeLocale(row.httpResponse.timestamp)}
-                    </td>
+                    <td>{formatDateTimeLocale(row.httpResponse.timestamp)}</td>
                     {MONITOR_KEYS.map((key) => {
                       const val = row[key];
-                      let color = 'var(--red)';
-                      if (val === 'OK' || val === 'UP') color = 'var(--green)';
-                      else if (val === 'NONE' || val === 'UNKNOWN')
-                        color = 'var(--font-soft)';
+                      let statusClass = 'is-failed';
+                      if (val === 'OK' || val === 'UP') {
+                        statusClass = 'is-operational';
+                      } else if (val === 'NONE' || val === 'UNKNOWN') {
+                        statusClass = 'is-unused';
+                      }
                       return (
-                        <td key={key} style={{ color, fontWeight: 700 }}>
+                        <td
+                          key={key}
+                          className={`service-history-cell ${statusClass}`}
+                        >
                           {val || '—'}
                         </td>
                       );
@@ -372,7 +372,7 @@ function EnvironmentServicesContainer() {
               </tbody>
             </table>
           </div>
-          <div style={{ marginTop: '1rem' }}>
+          <div className="history-footer">
             <TimeIndicator
               date={monitorHistory[0].httpResponse.timestamp}
               noMargin

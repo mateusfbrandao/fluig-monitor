@@ -59,6 +59,8 @@
       "unableToEncrypt": "Unable to encrypt the authentication keys.",
       "form": {
         "title": "Add a new environment",
+        "subtitle": "Set identity, OAuth authentication and monitoring frequencies.",
+        "scheduleSection": "Monitoring frequencies",
         "environmentDataSection": "Environment Info",
         "environmentName": {
           "label": "Environment Name:",
@@ -139,6 +141,8 @@
       "unableToEncrypt": "Unable to encrypt the authentication keys.",
       "form": {
         "title": "Edit Environment",
+        "subtitle": "Identity, OAuth authentication and collection frequencies for this environment.",
+        "scheduleSection": "Monitoring frequencies",
         "environmentDataSection": "Environment Data",
         "environmentName": {
           "label": "Environment Name:",
@@ -207,9 +211,51 @@
     },
     "HomeEnvironmentListView": {
       "header": "Your environments",
-      "createEnvironmentHelper": "Add a new environment using the button on the side."
+      "subtitleEmpty": "No environments are being monitored yet.",
+      "subtitleAllOnline": "{{count}} environments online.",
+      "subtitleWithOffline": "{{online}} of {{total}} online · {{offline}} offline.",
+      "syncAll": "Sync all",
+      "syncing": "Syncing...",
+      "addEnvironment": "New environment",
+      "searchPlaceholder": "Filter by name, URL, or release",
+      "viewGrid": "Grid view",
+      "viewTable": "Table view",
+      "noResults": "No environments match this filter.",
+      "emptyTitle": "Start with your first environment",
+      "emptyHelper": "Add a Fluig instance to track latency, uptime, and health in real time.",
+      "createEnvironmentHelper": "Add a new environment using the button on the side.",
+      "pingNow": "Check now",
+      "openMonitor": "Open monitor",
+      "openSettings": "Settings",
+      "filters": {
+        "all": "All",
+        "favorites": "Favorites"
+      },
+      "kpis": {
+        "status": "Global status",
+        "onlinePct": "{{pct}}% online",
+        "avgLatency": "Average latency",
+        "peakLatency": "Peak response",
+        "distribution": "Distribution"
+      },
+      "status": {
+        "online": "Online",
+        "offline": "Offline"
+      },
+      "card": {
+        "uptime": "Recent uptime"
+      },
+      "table": {
+        "status": "Status",
+        "environment": "Environment",
+        "kind": "Type",
+        "release": "Release",
+        "latency": "Latency",
+        "actions": "Actions"
+      }
     },
     "EnvironmentDataContainer": {
+      "tabsNav": "Environment sections",
       "sideMenu": {
         "summary": "Summary",
         "database": "Database",
@@ -248,7 +294,10 @@
     "environments": {
       "maximumExceeded": "You can only favorite up to 3 environments.",
       "added": "Environment added to favorites.",
-      "removed": "Environment removed from favorites."
+      "removed": "Environment removed from favorites.",
+      "toggleFailed": "Could not update favorite.",
+      "addFavorite": "Add to favorites",
+      "removeFavorite": "Remove from favorites"
     }
   },
   "components": {
@@ -266,7 +315,8 @@
       "processor": "Processor",
       "memory": "Memory",
       "disk": "Disk",
-      "activityTime": "System Uptime",
+      "activityTime": "Uptime",
+      "cores": "{{count}} cores",
       "activityTimeDescription": "%days% days, %hours% hours, %minutes% minutes",
       "noDataDueToVersion": "Server data unavailable due to Fluig version."
     },
@@ -282,10 +332,21 @@
       "attention": "Attention",
       "operational": "Operational",
       "unavailable": "Unavailable",
+      "serviceDown": "Service down",
+      "serverError": "Fluig server failure (HTTP %http%)",
+      "checking": "Checking...",
+      "checkingHelper": "Reading environment telemetry.",
       "operatingCorrectly": "The server is online and operating correctly.",
       "highResponseTime": "The server is online, but has an uncommon response time.",
       "noSatisfactoryResponse": "The server is online, but returned a non satisfactory response (HTTP %http%).",
-      "mayBeOffline": "It is possible that the server is offline. See details bellow: "
+      "mayBeOffline": "The server may be offline. See the details below.",
+      "uptimePct": "{{pct}}% uptime",
+      "uptimeStripAria": "Recent availability history",
+      "segmentOperational": "Operational",
+      "segmentDown": "Unavailable / timeout",
+      "segmentSlow": "High latency",
+      "timeout": "Timeout",
+      "httpFallback": "HTTP {{http}} (no response)"
     },
     "EnvironmentStatusSummary": {
       "updatedAt": "Updated at",
@@ -295,18 +356,21 @@
       "Disk": {
         "title": "Disk",
         "used": "Used",
-        "outOf": "out of"
+        "outOf": "out of",
+        "openRuntime": "Open runtime and server statistics"
       },
       "Memory": {
         "title": "Memory",
         "used": "Used",
-        "outOf": "out of"
+        "outOf": "out of",
+        "openDetailed": "Open detailed memory metrics"
       },
       "Database": {
         "title": "Database",
         "size": "Size",
         "traffic": "Traffic",
-        "trafficNotAllowed": "Traffic not available"
+        "trafficNotAllowed": "Traffic not available",
+        "openDetailed": "Open detailed database metrics"
       },
       "DatabasePropsPanel": {
         "title": "Database",
@@ -316,7 +380,7 @@
         "dbDriverVersion": "Driver Version:"
       },
       "DatabaseConnectionPools": {
-        "title": "JDBC Connection Pools (WildFly)",
+        "title": "JDBC pools",
         "fluigDs": "FluigDS Pool (Primary / Write)",
         "fluigDsRo": "FluigDSRO Pool (Read-Only)",
         "activeConnections": "Active",
@@ -352,68 +416,95 @@
     },
     "ThemeSettings": {
       "title": "Theme",
-      "helperText": "Select the application display theme:",
+      "helperText": "Interface appearance.",
       "systemTheme": "System",
       "systemThemeDesc": "Automatic",
-      "whiteTheme": "Light Theme",
+      "whiteTheme": "Light",
       "whiteThemeDesc": "Day mode",
-      "darkTheme": "Dark Theme",
+      "darkTheme": "Dark",
       "darkThemeDesc": "Night mode"
     },
     "UpdatesSettings": {
       "title": "Updates",
-      "helperText": "Here you can configure how the application should behave with updates.",
+      "helperText": "Choose how new versions are downloaded and installed.",
       "enableAutoDownload": {
-        "label": "Download updates automatically.",
-        "helper": "When you enable this option, Fluig monitor will download the available updates automatically."
+        "label": "Download updates automatically",
+        "helper": "Downloads new versions in the background when available."
       },
       "enableAutoInstall": {
         "label": "Install updates automatically",
-        "helper": "When you enable this option, Fluig Monitor will automatically install the updates after they are downloaded."
+        "helper": "Installs the downloaded version without manual action."
       },
       "updateFrequency": {
-        "helper": "Updates are always verified daily."
+        "helper": "Automatic checks run once per day."
       },
-      "checkNow": "Check for updates now",
-      "checkingNow": "Checking for updates...",
+      "checkNow": "Check now",
+      "checkingNow": "Checking...",
       "checkCompleted": "Check request sent. If an update is available, a notification will be shown."
     },
     "StorageSettings": {
-      "title": "Storage & Data Retention",
-      "helperText": "Configure local SQLite database retention periods to keep the application fast and compact.",
+      "title": "Storage",
+      "helperText": "Local SQLite retention so the app stays fast and compact.",
       "kpis": {
-        "dbSize": "Database Size",
-        "pingRecords": "Ping Records",
-        "snapshots": "Metric Snapshots"
+        "dbSize": "Database size",
+        "pingRecords": "Ping records",
+        "snapshots": "Snapshots"
       },
       "pingRetention": {
-        "label": "Ping / Latency History:",
-        "helper": "Records older than this interval will be purged."
+        "label": "Ping and latency history",
+        "helper": "Records older than this interval will be purged.",
+        "options": {
+          "days3": "3 days",
+          "days7Recommended": "7 days (recommended)",
+          "days14": "14 days",
+          "days30": "30 days"
+        }
       },
       "statsRetention": {
-        "label": "Metrics and Licenses History:",
-        "helper": "Consolidated server stats, thread counts, and memory snapshots."
+        "label": "Metrics and license history",
+        "helper": "Consolidated server stats, threads, and memory snapshots.",
+        "options": {
+          "days15": "15 days",
+          "days30Recommended": "30 days (recommended)",
+          "days60": "60 days",
+          "days90": "90 days"
+        }
       },
-      "pruneNow": "Purge Old History Now",
-      "pruningNow": "Purging old records...",
-      "pruneSuccess": "{{pings}} pings and {{snapshots}} snapshots purged successfully."
+      "pruneNow": "Purge old history",
+      "pruningNow": "Purging...",
+      "pruneSuccess": "{{pings}} pings and {{snapshots}} snapshots purged."
     },
     "LanguageSettings": {
       "title": "Language",
-      "helperText": "Select the language to be used by the application bellow: "
+      "helperText": "Language used by the application interface.",
+      "ptDesc": "Portuguese (Brazil)",
+      "enDesc": "English (US)"
     },
     "SystemTraySettings": {
-      "title": "System Tray",
-      "helperText": "Use this option to define how the app should behave on the system tray.",
+      "title": "System tray",
+      "helperText": "Minimize behavior and tray notifications.",
       "minimizeToSystemTray": "Minimize to system tray",
-      "minimizeToSystemTrayHelper": "When enabling this option, Fluig Monitor will be minimized to the system tray and will keep running.",
+      "minimizeToSystemTrayHelper": "Keeps Fluig Monitor running when the window is minimized.",
       "disableNotification": "Disable notification",
-      "disableNotificationHelper": "Use this option to disable the notification telling that Fluig Monitor is still running."
+      "disableNotificationHelper": "Hides the notice that the app is still running in the tray.",
+      "alertsTitle": "Alerts",
+      "alertsHelper": "Sound cue when an environment becomes unavailable.",
+      "enableSoundAlerts": "Sound alerts",
+      "enableSoundAlertsHelper": "Plays a synthesized cue on offline or connection failure.",
+      "testSound": "Test sound",
+      "testSoundTitle": "Play the critical alert"
     },
     "AboutSection": {
       "headingTitle": "About",
       "title": "An open-source tool for monitoring Fluig servers.",
       "developedBy": "Developed by ",
+      "license": "GNU GPL v3.0 license",
+      "platform": "Platform",
+      "webview": "Webview",
+      "openRepository": "Repository",
+      "reportIssue": "Report an issue",
+      "releaseNotes": "Release notes",
+      "runtimeUnavailable": "This installation's runtime could not be read.",
       "disclosure": "Fluig Monitor is an independent open-source project developed for research, study, and technical community support, with no affiliation or endorsement from TOTVS S.A.",
       "usageDisclosure": "This software is provided free of charge \"as is\". Because it relies on server APIs, versions, and custom configurations, compatibility may vary depending on the environment.",
       "learnMoreAt": "Learn more about the project in the official repository at "
@@ -446,56 +537,75 @@
     "EnvironmentHeader": {
       "pingNow": "Ping Now",
       "syncNow": "Sync Data",
-      "openUrl": "Open in Browser"
+      "openUrl": "Open in Browser",
+      "synced": "{{name}}: data synced successfully",
+      "pingOk": "{{name}}: operational ({{ms}}ms)",
+      "pingUnavailable": "Unavailable: {{name}} did not respond ({{detail}})",
+      "pingFailed": "Connection check failed: {{detail}}",
+      "syncFailed": "Sync failed: {{detail}}",
+      "connectionRefused": "Timeout / connection refused",
+      "serverUnavailable": "Server unavailable",
+      "unknownError": "Unknown error",
+      "statusUnknown": "Status unknown",
+      "fluigVersion": "Fluig v{{version}}"
     },
     "EnvironmentRuntimeStats": {
-      "title": "Runtime & Threading Statistics",
-      "connectedUsers": "Connected Users",
-      "activeThreads": "Active Threads",
-      "peakThreads": "Peak Threads",
-      "daemonThreads": "Daemon Threads",
-      "totalStartedThreads": "Total Started Threads",
-      "tmpFolderSize": "Temp Folder Size",
-      "logFolderSize": "Log Folder Size",
-      "runtimeStart": "Runtime Start",
-      "threadsEvolutionTitle": "Threads & Connected Users Over Time"
+      "title": "Runtime and threads",
+      "connectedUsers": "Connected users",
+      "activeThreads": "Active threads",
+      "peakThreads": "Peak",
+      "daemonThreads": "Daemon threads",
+      "totalStartedThreads": "Total started",
+      "tmpFolderSize": "Temp files",
+      "logFolderSize": "Logs",
+      "runtimeStart": "Runtime start",
+      "threadsEvolutionTitle": "Threads and connected users over time"
     },
     "EnvironmentArtifacts": {
-      "title": "Server Artifacts",
-      "appsDir": "Applications (Apps)",
+      "title": "Server artifacts",
+      "appsDir": "Apps",
       "coreDir": "Core",
       "systemDir": "System",
-      "searchPlaceholder": "Filter artifacts by name...",
+      "searchPlaceholder": "Filter by name or signature",
       "artifactName": "Artifact",
-      "artifactDetails": "Checksum / Details",
-      "totalCount": "Total listed"
+      "artifactDetails": "Checksum / details",
+      "totalCount": "Total",
+      "unknown": "Unknown",
+      "noResults": "No artifacts match this filter."
     },
     "EnvironmentServicesHistory": {
-      "title": "Services & DataSources",
-      "overviewTitle": "Subsystems Overview & SLA",
-      "successRate": "Success Rate",
-      "lastException": "Last Registered Exception",
+      "title": "Services and data sources",
+      "overviewTitle": "Subsystems and SLA",
+      "successRate": "Success rate",
+      "lastException": "Last registered exception",
       "noExceptions": "No exceptions reported",
-      "viewErrorDetails": "View Error",
-      "dataSourcesTitle": "Configured DataSources",
-      "historyTitle": "Recent Service Monitoring History"
+      "viewErrorDetails": "View error",
+      "dataSourcesTitle": "Configured data sources",
+      "historyTitle": "Recent history",
+      "timestamp": "Timestamp",
+      "fluigDs": "FluigDS (read/write)",
+      "fluigDsRo": "FluigDSRO (read-only)",
+      "close": "Close"
     },
     "EnvironmentInsights": {
-      "title": "Environment Diagnostics & Insights",
-      "allHealthyTitle": "Environment Operating Healthily",
-      "allHealthyDesc": "All memory, disk, license, service, and latency metrics are within recommended thresholds.",
-      "highMemoryTitle": "High Server Memory Usage",
+      "title": "Diagnostics and insights",
+      "severityHealthy": "Healthy",
+      "severityWarning": "Warning",
+      "severityCritical": "Critical",
+      "allHealthyTitle": "Environment operating healthily",
+      "allHealthyDesc": "Memory, disk, licenses, services, and latency are within recommended thresholds.",
+      "highMemoryTitle": "High memory usage",
       "highMemoryDesc": "Server RAM usage has exceeded 85% of total capacity.",
-      "lowDiskTitle": "Low Disk Space",
-      "lowDiskDesc": "Available server disk space is below 15%.",
-      "largeLogsTitle": "Large Log / Temp Directories",
-      "largeLogsDesc": "Fluig log or temporary directories are consuming over 5 GB.",
-      "lowLicensesTitle": "Licenses Running Low",
-      "lowLicensesDesc": "Few remaining licenses are available for additional users.",
-      "failedServicesTitle": "Critical Services Failing",
-      "failedServicesDesc": "One or more monitored services reported a failure on the latest check: ",
-      "highLatencyTitle": "Elevated Response Latency",
-      "highLatencyDesc": "Recent average response time is above 800ms."
+      "lowDiskTitle": "Low disk space",
+      "lowDiskDesc": "Available disk space is below 15%.",
+      "largeLogsTitle": "Large log / temp directories",
+      "largeLogsDesc": "Fluig log or temporary directories are over 5 GB.",
+      "lowLicensesTitle": "Licenses running low",
+      "lowLicensesDesc": "Few licenses remain for additional concurrent users.",
+      "failedServicesTitle": "Critical services failing",
+      "failedServicesDesc": "One or more services reported a failure on the latest check: ",
+      "highLatencyTitle": "Elevated response latency",
+      "highLatencyDesc": "Recent average response time is above 800 ms."
     }
   },
   "classes": {

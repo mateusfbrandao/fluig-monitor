@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { shell } from 'electron';
 import {
-  FiCpu,
   FiExternalLink,
   FiGithub,
   FiHelpCircle,
   FiInfo,
   FiPackage,
-  FiTerminal,
 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -19,38 +17,83 @@ import {
   SystemRuntimeInfo,
 } from '../../../ipc/settingsIpcHandler';
 
+const REPOSITORY_URL = 'https://github.com/mateusfbrandao/fluig-monitor';
+
 export default function AboutSection() {
   const { t } = useTranslation();
   const [runtimeInfo, setRuntimeInfo] = useState<SystemRuntimeInfo | null>(
     null
   );
+  const [runtimeState, setRuntimeState] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading');
 
   useEffect(() => {
+    let active = true;
+
     getSystemRuntimeInfo()
-      .then(setRuntimeInfo)
-      .catch(() => {});
+      .then((info) => {
+        if (!active) return null;
+        setRuntimeInfo(info);
+        setRuntimeState('ready');
+        return null;
+      })
+      .catch(() => {
+        if (!active) return;
+        setRuntimeState('error');
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  const open = (url: string) => {
+    shell.openExternal(url);
+  };
+
+  const specs = [
+    {
+      label: runtimeInfo?.framework || 'Tauri',
+      value: runtimeInfo?.frameworkVersion
+        ? `v${runtimeInfo.frameworkVersion}`
+        : '—',
+    },
+    {
+      label: t('components.AboutSection.webview'),
+      value: runtimeInfo?.webview || runtimeInfo?.chrome || '—',
+    },
+    {
+      label: runtimeInfo?.backend || 'Rust',
+      value: runtimeInfo?.backendVersion
+        ? `v${runtimeInfo.backendVersion}`
+        : '—',
+    },
+    {
+      label: t('components.AboutSection.platform'),
+      value: runtimeInfo?.platform || '—',
+    },
+  ];
 
   return (
     <DefaultMotionDiv id="about-section">
       <h3 className="icon-title">
-        <span className="icon-dot blue-variant">
+        <span className="icon-dot neutral-variant">
           <FiInfo />
         </span>
         {t('components.AboutSection.headingTitle')}
       </h3>
 
-      <div className="about-hero-card">
-        <div className="about-brand-row">
-          <img
-            src={logoImage}
-            alt="Fluig Monitor"
-            className="about-logo-image"
-          />
-          <div className="about-brand-text">
-            <div className="about-title-row">
+      <div className="about-plate">
+        <div className="about-identity">
+          <div className="about-mark">
+            <img src={logoImage} alt="" />
+          </div>
+
+          <div className="about-identity-copy">
+            <div className="about-name-row">
               <h4 className="about-app-name">
-                Fluig <span className="title-suffix">Monitor</span>
+                Fluig <span className="name-accent">Monitor</span>
               </h4>
               <span className="about-version-badge">v{version}</span>
             </div>
@@ -58,105 +101,71 @@ export default function AboutSection() {
               {t('components.AboutSection.title')}
             </p>
           </div>
-        </div>
 
-        <div className="about-meta-row">
-          <span>
-            {t('components.AboutSection.developedBy')}{' '}
-            <button
-              type="button"
-              className="btn-link-author"
-              onClick={() =>
-                shell.openExternal('https://github.com/mateusfbrandao')
-              }
-            >
-              mateusfbrandao
-            </button>
-          </span>
-          <span className="meta-separator">•</span>
-          <span>Licença GNU GPL v3.0</span>
-        </div>
-
-        {runtimeInfo && (
-          <div className="about-runtime-grid">
-            <div className="about-runtime-item">
-              <span className="runtime-label">
-                <FiPackage /> {runtimeInfo.framework || 'Tauri'}
-              </span>
-              <span className="runtime-value">
-                v{runtimeInfo.frameworkVersion || runtimeInfo.electron || '2.2.0'}
-              </span>
-            </div>
-            <div className="about-runtime-item">
-              <span className="runtime-label">
-                <FiCpu /> {runtimeInfo.webview ? 'Webview' : 'Chromium'}
-              </span>
-              <span className="runtime-value">
-                {runtimeInfo.webview || runtimeInfo.chrome || 'WebKitGTK'}
-              </span>
-            </div>
-            <div className="about-runtime-item">
-              <span className="runtime-label">
-                <FiTerminal /> {runtimeInfo.backend ? 'Rust' : 'Node.js'}
-              </span>
-              <span className="runtime-value">
-                v{runtimeInfo.backendVersion || runtimeInfo.node || '1.84'}
-              </span>
-            </div>
-            <div className="about-runtime-item">
-              <span className="runtime-label">
-                <FiHelpCircle /> Plataforma
-              </span>
-              <span className="runtime-value">{runtimeInfo.platform}</span>
-            </div>
+          <div className="about-identity-meta">
+            <span>
+              {t('components.AboutSection.developedBy')}
+              <button
+                type="button"
+                className="about-author-link"
+                onClick={() => open('https://github.com/mateusfbrandao')}
+              >
+                mateusfbrandao
+              </button>
+            </span>
+            <span>{t('components.AboutSection.license')}</span>
           </div>
+        </div>
+
+        {runtimeState === 'error' ? (
+          <p className="about-runtime-fallback" role="status">
+            {t('components.AboutSection.runtimeUnavailable')}
+          </p>
+        ) : (
+          <dl
+            className="about-spec"
+            aria-busy={runtimeState === 'loading' ? 'true' : 'false'}
+          >
+            {specs.map((item) => (
+              <div className="about-spec-item" key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{runtimeState === 'loading' ? '…' : item.value}</dd>
+              </div>
+            ))}
+          </dl>
         )}
 
-        <div className="about-actions-row">
+        <div className="about-actions">
           <button
             type="button"
-            className="btn-about-action"
-            onClick={() =>
-              shell.openExternal(
-                'https://github.com/mateusfbrandao/fluig-monitor'
-              )
-            }
+            className="about-action about-action-primary"
+            onClick={() => open(REPOSITORY_URL)}
           >
-            <FiGithub />
-            <span>GitHub Repository</span>
-            <FiExternalLink />
+            <FiGithub aria-hidden="true" />
+            <span>{t('components.AboutSection.openRepository')}</span>
+            <FiExternalLink aria-hidden="true" />
           </button>
 
           <button
             type="button"
-            className="btn-about-action"
-            onClick={() =>
-              shell.openExternal(
-                'https://github.com/mateusfbrandao/fluig-monitor/issues'
-              )
-            }
+            className="about-action"
+            onClick={() => open(`${REPOSITORY_URL}/issues`)}
           >
-            <FiHelpCircle />
-            <span>Reportar Issue</span>
-            <FiExternalLink />
+            <FiHelpCircle aria-hidden="true" />
+            <span>{t('components.AboutSection.reportIssue')}</span>
           </button>
 
           <button
             type="button"
-            className="btn-about-action"
-            onClick={() =>
-              shell.openExternal(
-                'https://github.com/mateusfbrandao/fluig-monitor/releases'
-              )
-            }
+            className="about-action"
+            onClick={() => open(`${REPOSITORY_URL}/releases`)}
           >
-            <FiPackage />
-            <span>Release Notes</span>
-            <FiExternalLink />
+            <FiPackage aria-hidden="true" />
+            <span>{t('components.AboutSection.releaseNotes')}</span>
           </button>
         </div>
 
-        <div className="about-disclaimer-box">
+        <div className="about-disclaimer">
           <p>{t('components.AboutSection.disclosure')}</p>
           <p>{t('components.AboutSection.usageDisclosure')}</p>
         </div>

@@ -19,11 +19,18 @@ export default function UpdatesSettings() {
   const [checkMessage, setCheckMessage] = useState<string | null>(null);
 
   async function loadSettings() {
-    const { ENABLE_AUTO_DOWNLOAD_UPDATE, ENABLE_AUTO_INSTALL_UPDATE } =
-      await getAppSettingsAsObject();
+    try {
+      const settings = await getAppSettingsAsObject();
+      if (!settings) return;
 
-    setEnableAutoDownload(parseBoolean(ENABLE_AUTO_DOWNLOAD_UPDATE.value));
-    setEnableAutoInstall(parseBoolean(ENABLE_AUTO_INSTALL_UPDATE.value));
+      const download = settings.ENABLE_AUTO_DOWNLOAD_UPDATE;
+      const install = settings.ENABLE_AUTO_INSTALL_UPDATE;
+
+      if (download) setEnableAutoDownload(parseBoolean(download.value));
+      if (install) setEnableAutoInstall(parseBoolean(install.value));
+    } catch {
+      // Mantém os padrões locais se as configurações ainda não puderem ser lidas.
+    }
   }
 
   function handleEnableUpdateAutoInstall(checked: boolean) {
@@ -56,12 +63,7 @@ export default function UpdatesSettings() {
       await triggerAppUpdateCheck();
       setTimeout(() => {
         setIsCheckingUpdate(false);
-        setCheckMessage(
-          t(
-            'components.UpdatesSettings.checkCompleted',
-            'Verificação enviada. Se houver novidades, uma notificação será exibida.'
-          )
-        );
+        setCheckMessage(t('components.UpdatesSettings.checkCompleted'));
       }, 1500);
     } catch {
       setIsCheckingUpdate(false);
@@ -75,12 +77,14 @@ export default function UpdatesSettings() {
   return (
     <DefaultMotionDiv id="app-updates-settings">
       <h3 className="icon-title">
-        <span className="icon-dot yellow-variant">
+        <span className="icon-dot neutral-variant">
           <FiPackage />
         </span>
         {t('components.UpdatesSettings.title')}
       </h3>
-      <p className="mb-2">{t('components.UpdatesSettings.helperText')}</p>
+      <p className="settings-section-helper">
+        {t('components.UpdatesSettings.helperText')}
+      </p>
 
       <div className="settings-toggles-list">
         <SwitchToggle
@@ -108,30 +112,28 @@ export default function UpdatesSettings() {
           onClick={handleCheckForUpdates}
           disabled={isCheckingUpdate}
         >
-          <FiRefreshCw className={isCheckingUpdate ? 'spin-icon' : ''} />
+          <FiRefreshCw
+            className={isCheckingUpdate ? 'spin-icon' : ''}
+            aria-hidden="true"
+          />
           <span>
             {isCheckingUpdate
-              ? t(
-                  'components.UpdatesSettings.checkingNow',
-                  'Verificando atualizações...'
-                )
-              : t(
-                  'components.UpdatesSettings.checkNow',
-                  'Verificar se há atualizações agora'
-                )}
+              ? t('components.UpdatesSettings.checkingNow')
+              : t('components.UpdatesSettings.checkNow')}
           </span>
         </button>
 
         {checkMessage && (
           <span className="update-feedback-msg">
-            <FiCheckCircle />
+            <FiCheckCircle aria-hidden="true" />
             {checkMessage}
           </span>
         )}
       </div>
 
-      <p className="mt-2 font-soft update-frequency-info">
-        <FiInfo /> {t('components.UpdatesSettings.updateFrequency.helper')}
+      <p className="update-frequency-info">
+        <FiInfo aria-hidden="true" />{' '}
+        {t('components.UpdatesSettings.updateFrequency.helper')}
       </p>
     </DefaultMotionDiv>
   );

@@ -55,7 +55,9 @@ export default function DatabasePanel() {
           navigate(`/environment/${environmentId}/database`);
         }
       }}
-      aria-label={`${t('components.SystemResources.Database.title')} - Abrir métricas detalhadas do banco de dados`}
+      aria-label={`${t('components.SystemResources.Database.title')} - ${t(
+        'components.SystemResources.Database.openDetailed'
+      )}`}
     >
       <div className="header">
         <div className="header-left">

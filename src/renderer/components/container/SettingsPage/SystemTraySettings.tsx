@@ -27,6 +27,21 @@ export default function SystemTraySettings() {
   function handleEnableMinimizeFeature(checked: boolean) {
     setEnableMinimizeFeature(checked);
 
+    if (!checked && disableNotification) {
+      setDisableNotification(false);
+      updateAppSettings([
+        {
+          settingId: 'ENABLE_MINIMIZE_FEATURE',
+          value: String(checked),
+        },
+        {
+          settingId: 'DISABLE_MINIMIZE_NOTIFICATION',
+          value: 'false',
+        },
+      ]);
+      return;
+    }
+
     updateAppSettings([
       {
         settingId: 'ENABLE_MINIMIZE_FEATURE',
@@ -90,13 +105,15 @@ export default function SystemTraySettings() {
   return (
     <DefaultMotionDiv id="system-tray-settings">
       <h3 className="icon-title">
-        <span className="icon-dot purple-variant">
+        <span className="icon-dot neutral-variant">
           <FiInbox />
         </span>
         {t('components.SystemTraySettings.title')}
       </h3>
 
-      <p className="mb-2">{t('components.SystemTraySettings.helperText')}</p>
+      <p className="settings-section-helper">
+        {t('components.SystemTraySettings.helperText')}
+      </p>
 
       <div className="settings-toggles-list">
         <SwitchToggle
@@ -117,52 +134,40 @@ export default function SystemTraySettings() {
           helperText={t(
             'components.SystemTraySettings.disableNotificationHelper'
           )}
+          disabled={!enableMinimizeFeature}
         />
+      </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1rem',
-          }}
-        >
-          <div style={{ flex: 1 }}>
+      <div className="settings-subsection">
+        <div className="settings-subsection-head">
+          <h4>{t('components.SystemTraySettings.alertsTitle')}</h4>
+          <p>{t('components.SystemTraySettings.alertsHelper')}</p>
+        </div>
+
+        <div className="settings-toggles-list">
+          <div className="settings-toggle-with-action">
             <SwitchToggle
               id="enableSoundAlerts"
               checked={enableSoundAlerts}
               onChange={(checked) => handleSoundAlertsToggle(checked)}
-              label={t(
-                'components.SystemTraySettings.enableSoundAlerts',
-                'Alertas sonoros de indisponibilidade'
-              )}
+              label={t('components.SystemTraySettings.enableSoundAlerts')}
               helperText={t(
-                'components.SystemTraySettings.enableSoundAlertsHelper',
-                'Tocar um aviso sonoro sintetizado quando um ambiente Fluig ficar offline ou registrar falha de conexão.'
+                'components.SystemTraySettings.enableSoundAlertsHelper'
               )}
             />
+
+            {enableSoundAlerts && (
+              <button
+                type="button"
+                className="settings-secondary-action"
+                onClick={() => playAlertSound('critical', true)}
+                title={t('components.SystemTraySettings.testSoundTitle')}
+              >
+                <FiVolume2 aria-hidden="true" />
+                <span>{t('components.SystemTraySettings.testSound')}</span>
+              </button>
+            )}
           </div>
-          {enableSoundAlerts && (
-            <button
-              type="button"
-              className="action-btn"
-              onClick={() => playAlertSound('critical', true)}
-              style={{
-                alignSelf: 'center',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.45rem 0.85rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
-              title="Testar sinal sonoro de alerta crítico"
-            >
-              <FiVolume2 />
-              <span>Testar som</span>
-            </button>
-          )}
         </div>
       </div>
     </DefaultMotionDiv>

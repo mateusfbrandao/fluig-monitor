@@ -63,6 +63,7 @@ class TauriIpcRenderer {
         }
 
         case 'toggleFavoriteEnvironment':
+        case 'toggleEnvironmentFavorite':
           return await invoke('toggle_favorite_environment', { id: args[0] });
 
         case 'deleteEnvironment':
@@ -497,12 +498,16 @@ class TauriIpcRenderer {
     if (!activeListeners.has(channel)) {
       activeListeners.set(channel, new Set());
 
-      // Conecta ao event bus do Tauri v2
+      // Conecta ao event bus do Tauri v2. Fora do webview a promise
+      // rejeita; o app precisa continuar mesmo assim.
       const unlistenPromise = listen(channel, (event) => {
         const callbacks = activeListeners.get(channel);
         if (callbacks) {
           callbacks.forEach((cb) => cb(event, event.payload));
         }
+      }).catch((err) => {
+        console.error(`[Tauri IPC] Could not subscribe to ${channel}:`, err);
+        return () => {};
       });
       tauriUnlisteners.set(channel, unlistenPromise);
     }

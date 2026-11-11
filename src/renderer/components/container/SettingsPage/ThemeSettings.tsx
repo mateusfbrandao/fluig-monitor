@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { FiCheck, FiMonitor, FiMoon, FiPenTool, FiSun } from 'react-icons/fi';
+import { FiMonitor, FiMoon, FiPenTool, FiSun } from 'react-icons/fi';
 import { useTheme } from '../../../contexts/ThemeContext';
 import DefaultMotionDiv from '../../base/DefaultMotionDiv';
 
@@ -10,15 +10,16 @@ export default function ThemeSettings() {
   return (
     <DefaultMotionDiv id="theme-settings">
       <h3 className="icon-title">
-        <span className="icon-dot purple-variant">
+        <span className="icon-dot neutral-variant">
           <FiPenTool />
         </span>
         {t('components.ThemeSettings.title')}
       </h3>
-      <p className="mb-2">{t('components.ThemeSettings.helperText')}</p>
+      <p className="settings-section-helper">
+        {t('components.ThemeSettings.helperText')}
+      </p>
 
-      <div className="theme-options-grid">
-        {/* Sistema (Automático) */}
+      <div className="theme-options-grid" role="radiogroup">
         <label
           htmlFor="radioTheme_system"
           className={`theme-card ${theme === 'SYSTEM' ? 'is-selected' : ''}`}
@@ -32,11 +33,6 @@ export default function ThemeSettings() {
             onChange={() => setFrontEndTheme('SYSTEM')}
             className="visually-hidden"
           />
-          {theme === 'SYSTEM' && (
-            <div className="theme-check-badge">
-              <FiCheck />
-            </div>
-          )}
           <div className="theme-preview-box system-preview">
             <div className="preview-half preview-half-light">
               <div className="mini-nav" />
@@ -47,20 +43,19 @@ export default function ThemeSettings() {
               <div className="mini-card" />
             </div>
             <div className="theme-badge-icon">
-              <FiMonitor />
+              <FiMonitor aria-hidden="true" />
             </div>
           </div>
           <div className="theme-card-info">
             <span className="theme-name">
-              {t('components.ThemeSettings.systemTheme', 'Sistema')}
+              {t('components.ThemeSettings.systemTheme')}
             </span>
             <span className="theme-desc">
-              {t('components.ThemeSettings.systemThemeDesc', 'Automático')}
+              {t('components.ThemeSettings.systemThemeDesc')}
             </span>
           </div>
         </label>
 
-        {/* Claro */}
         <label
           htmlFor="radioTheme_white"
           className={`theme-card ${theme === 'WHITE' ? 'is-selected' : ''}`}
@@ -74,31 +69,25 @@ export default function ThemeSettings() {
             onChange={() => setFrontEndTheme('WHITE')}
             className="visually-hidden"
           />
-          {theme === 'WHITE' && (
-            <div className="theme-check-badge">
-              <FiCheck />
-            </div>
-          )}
           <div className="theme-preview-box light-preview">
             <div className="preview-full">
               <div className="mini-nav" />
               <div className="mini-card" />
             </div>
             <div className="theme-badge-icon">
-              <FiSun />
+              <FiSun aria-hidden="true" />
             </div>
           </div>
           <div className="theme-card-info">
             <span className="theme-name">
-              {t('components.ThemeSettings.whiteTheme', 'Tema Claro')}
+              {t('components.ThemeSettings.whiteTheme')}
             </span>
             <span className="theme-desc">
-              {t('components.ThemeSettings.whiteThemeDesc', 'Modo diurno')}
+              {t('components.ThemeSettings.whiteThemeDesc')}
             </span>
           </div>
         </label>
 
-        {/* Escuro */}
         <label
           htmlFor="radioTheme_dark"
           className={`theme-card ${theme === 'DARK' ? 'is-selected' : ''}`}
@@ -112,26 +101,21 @@ export default function ThemeSettings() {
             onChange={() => setFrontEndTheme('DARK')}
             className="visually-hidden"
           />
-          {theme === 'DARK' && (
-            <div className="theme-check-badge">
-              <FiCheck />
-            </div>
-          )}
           <div className="theme-preview-box dark-preview">
             <div className="preview-full">
               <div className="mini-nav" />
               <div className="mini-card" />
             </div>
             <div className="theme-badge-icon">
-              <FiMoon />
+              <FiMoon aria-hidden="true" />
             </div>
           </div>
           <div className="theme-card-info">
             <span className="theme-name">
-              {t('components.ThemeSettings.darkTheme', 'Tema Escuro')}
+              {t('components.ThemeSettings.darkTheme')}
             </span>
             <span className="theme-desc">
-              {t('components.ThemeSettings.darkThemeDesc', 'Modo noturno')}
+              {t('components.ThemeSettings.darkThemeDesc')}
             </span>
           </div>
         </label>

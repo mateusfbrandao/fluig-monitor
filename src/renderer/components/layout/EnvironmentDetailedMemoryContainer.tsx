@@ -56,23 +56,16 @@ function EnvironmentDetailedMemoryContainer() {
       ) {
         setLastMemoryData(environmentDataResult.statisticHistory[0]);
 
-        const dataNormalized = [];
-
-        for (
-          let i = 0;
-          i < environmentDataResult.statisticHistory.length;
-          i += 1
-        ) {
-          const element = environmentDataResult.statisticHistory[i];
-          dataNormalized.push({
+        const dataNormalized = environmentDataResult.statisticHistory.map(
+          (element) => ({
             timestamp: element.httpResponse.timestamp,
             systemServerMemorySize: Number(element.systemServerMemorySize),
             systemServerMemoryFree: Number(element.systemServerMemoryFree),
             systemServerMemoryUsed:
               Number(element.systemServerMemorySize) -
               Number(element.systemServerMemoryFree),
-          });
-        }
+          })
+        );
 
         setNormalizedMemoryData(dataNormalized);
       }
@@ -87,6 +80,37 @@ function EnvironmentDetailedMemoryContainer() {
     return <SpinnerLoader />;
   }
 
+  const heapStats = [
+    {
+      prefix: t('components.EnvironmentDetailedMemoryContainer.heapUsed'),
+      heading: formatBytes(Number(lastMemoryData.memoryHeap)),
+      description: t(
+        'components.EnvironmentDetailedMemoryContainer.heapUsedDesc'
+      ),
+    },
+    {
+      prefix: t('components.EnvironmentDetailedMemoryContainer.nonHeap'),
+      heading: formatBytes(Number(lastMemoryData.nonMemoryHeap)),
+      description: t(
+        'components.EnvironmentDetailedMemoryContainer.nonHeapDesc'
+      ),
+    },
+    {
+      prefix: t('components.EnvironmentDetailedMemoryContainer.heapMax'),
+      heading: formatBytes(Number(lastMemoryData.systemHeapMaxSize)),
+      description: t(
+        'components.EnvironmentDetailedMemoryContainer.heapMaxDesc'
+      ),
+    },
+    {
+      prefix: t('components.EnvironmentDetailedMemoryContainer.heapTotal'),
+      heading: formatBytes(Number(lastMemoryData.systemHeapSize)),
+      description: t(
+        'components.EnvironmentDetailedMemoryContainer.heapTotalDesc'
+      ),
+    },
+  ];
+
   return (
     <DefaultMotionDiv id="environment-detailed-memory">
       <h3>
@@ -96,13 +120,7 @@ function EnvironmentDetailedMemoryContainer() {
       </h3>
       <Box>
         <div className="detailed-memory-grid">
-          <div
-            style={{
-              display: 'flex',
-              height: '100%',
-              alignItems: 'center',
-            }}
-          >
+          <div className="detailed-memory-stat">
             <Stat
               heading={formatBytes(
                 Number(lastMemoryData.systemServerMemorySize) -
@@ -127,9 +145,7 @@ function EnvironmentDetailedMemoryContainer() {
               <CartesianGrid strokeDasharray="3" vertical={false} />
               <XAxis
                 dataKey="timestamp"
-                tickFormatter={(el) =>
-                  `    ${formatDateTimeLocale(el)}      `
-                }
+                tickFormatter={(el) => `    ${formatDateTimeLocale(el)}      `}
                 interval="preserveEnd"
               />
               <YAxis
@@ -159,70 +175,22 @@ function EnvironmentDetailedMemoryContainer() {
           </ResponsiveContainer>
         </div>
       </Box>
-      <h3 style={{ marginTop: '2rem' }}>
+
+      <h3 className="detailed-memory-section-title">
         {t(
           'components.EnvironmentDetailedMemoryContainer.memoryStatisticsTitle'
         )}
       </h3>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '1rem',
-        }}
-      >
-        <Box>
-          <Stat
-            prefix={t(
-              'components.EnvironmentDetailedMemoryContainer.heapUsed',
-              'Heap em Uso'
-            )}
-            heading={formatBytes(Number(lastMemoryData.memoryHeap))}
-            description={t(
-              'components.EnvironmentDetailedMemoryContainer.heapUsedDesc',
-              'Memória consumida por objetos ativos da aplicação Fluig.'
-            )}
-          />
-        </Box>
-        <Box>
-          <Stat
-            prefix={t(
-              'components.EnvironmentDetailedMemoryContainer.nonHeap',
-              'Non-Heap (Metaspace)'
-            )}
-            heading={formatBytes(Number(lastMemoryData.nonMemoryHeap))}
-            description={t(
-              'components.EnvironmentDetailedMemoryContainer.nonHeapDesc',
-              'Memória nativa para classes carregadas e compilação JIT.'
-            )}
-          />
-        </Box>
-        <Box>
-          <Stat
-            prefix={t(
-              'components.EnvironmentDetailedMemoryContainer.heapMax',
-              'Heap Máximo (-Xmx)'
-            )}
-            heading={formatBytes(Number(lastMemoryData.systemHeapMaxSize))}
-            description={t(
-              'components.EnvironmentDetailedMemoryContainer.heapMaxDesc',
-              'Teto máximo permitido configurado para o servidor Java (-Xmx).'
-            )}
-          />
-        </Box>
-        <Box>
-          <Stat
-            prefix={t(
-              'components.EnvironmentDetailedMemoryContainer.heapTotal',
-              'Heap Reservado'
-            )}
-            heading={formatBytes(Number(lastMemoryData.systemHeapSize))}
-            description={t(
-              'components.EnvironmentDetailedMemoryContainer.heapTotalDesc',
-              'Total de memória que a JVM já alocou do sistema operacional.'
-            )}
-          />
-        </Box>
+      <div className="detailed-memory-stats-grid">
+        {heapStats.map((item) => (
+          <Box key={item.prefix}>
+            <Stat
+              prefix={item.prefix}
+              heading={item.heading}
+              description={item.description}
+            />
+          </Box>
+        ))}
       </div>
     </DefaultMotionDiv>
   );

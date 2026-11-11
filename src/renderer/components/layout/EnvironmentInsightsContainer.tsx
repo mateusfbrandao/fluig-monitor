@@ -205,18 +205,29 @@ function EnvironmentInsightsContainer() {
     );
   }
 
+  const severityLabel = {
+    healthy: t('components.EnvironmentInsights.severityHealthy'),
+    warning: t('components.EnvironmentInsights.severityWarning'),
+    critical: t('components.EnvironmentInsights.severityCritical'),
+  };
+
   return (
     <DefaultMotionDiv id="environment-insights-container">
       <h3>{t('components.EnvironmentInsights.title')}</h3>
 
       <div className="insights-list">
         {insights.map((item) => (
-          <div key={item.id} className={`insight-card ${item.severity}`}>
-            <div className="insight-icon">
+          <div key={item.id} className={`insight-card is-${item.severity}`}>
+            <div className="insight-icon" aria-hidden="true">
               {item.severity === 'critical' ? <FiAlertCircle /> : item.icon}
             </div>
             <div className="insight-body">
-              <h4>{item.title}</h4>
+              <div className="insight-head">
+                <h4>{item.title}</h4>
+                <span className={`insight-severity is-${item.severity}`}>
+                  {severityLabel[item.severity]}
+                </span>
+              </div>
               <p>{item.description}</p>
             </div>
           </div>
